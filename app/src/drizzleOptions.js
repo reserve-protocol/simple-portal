@@ -3,6 +3,12 @@ import SimpleStorage from "./contracts/SimpleStorage.json";
 import ComplexStorage from "./contracts/ComplexStorage.json";
 import TutorialToken from "./contracts/TutorialToken.json";
 
+// import USDC from "./contracts/USDC.json";
+// import TUSD from "./contracts/TUSD.json";
+// import PAX from "./contracts/PAX.json";
+// import Reserve from "./contracts/Reserve.json";
+// import Manager from "./contracts/Manager.json";
+
 const options = {
   web3: {
     block: false,
