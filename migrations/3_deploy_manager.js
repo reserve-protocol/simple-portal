@@ -10,16 +10,22 @@ const MANAGER = artifacts.require("Manager");
 
 module.exports = function(deployer, network, accounts) {
 
-  const DAILY = accounts[0];
-  const OWNER = accounts[1];
+  const USER = accounts[0];
+  const DAILY = accounts[1];
+  const OWNER = accounts[2];
   const ZERO = "0x0000000000000000000000000000000000000000";
   const THIRTY = web3.utils.toBN(10).pow(web3.utils.toBN(30));
   const EIGHTEEN = web3.utils.toBN(10).pow(web3.utils.toBN(18));
 
   // Stablecoins
-  deployer.deploy(USDC, { from: OWNER });
-  deployer.deploy(TUSD, { from: OWNER });
-  deployer.deploy(PAX, { from: OWNER }).then(() => {
+  deployer.deploy(USDC, { from: OWNER }).then((instance) => {
+    instance.transfer(USER, web3.utils.toBN(501000000), { from: OWNER });
+  });
+  deployer.deploy(TUSD, { from: OWNER }).then((instance) => {
+    instance.transfer(USER, web3.utils.toBN(502).mul(EIGHTEEN), { from: OWNER });
+  });
+  deployer.deploy(PAX, { from: OWNER }).then((instance) => {
+    instance.transfer(USER, web3.utils.toBN(503).mul(EIGHTEEN), { from: OWNER });
 
     // Basket
     return deployer.deploy(
@@ -27,9 +33,9 @@ module.exports = function(deployer, network, accounts) {
       ZERO, 
       [USDC.address, TUSD.address, PAX.address], 
       [
+        web3.utils.toBN(333334).mul(EIGHTEEN),
         web3.utils.toBN(333333).mul(THIRTY), 
-        web3.utils.toBN(333333).mul(THIRTY), 
-        web3.utils.toBN(333334).mul(EIGHTEEN)
+        web3.utils.toBN(333333).mul(THIRTY)
       ],
       {from: OWNER}
     );

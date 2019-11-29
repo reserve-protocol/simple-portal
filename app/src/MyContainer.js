@@ -1,104 +1,116 @@
 import { drizzleConnect } from "@drizzle/react-plugin";
 import React, { Component } from "react";
+import { 
+  Button, 
+  Card 
+} from "@material-ui/core";
 import {
   AccountData,
   ContractData,
   ContractForm,
 } from "@drizzle/react-components";
 
-import logo from "./logo.png";
+
+import logo from "./assets/reserve-logo.png";
+import usdcLogo from "./assets/usdc.png";
+import tusdLogo from "./assets/tusd.png";
+import paxLogo from "./assets/pax.png";
+import rsvLogo from "./assets/rsv.svg";
+
+function formatNumber (nativeDecimals, showDecimals) {
+  return function(arg) {
+    return Math.round(arg / Math.pow(10, nativeDecimals)).toFixed(showDecimals);
+  }
+};
 
 class MyComponent extends Component {
   constructor(props) {
     super(props);
   }
 
+  
+
   render() {
     return (
       <div className="App">
         <div>
           <img src={logo} alt="drizzle-logo" />
-          <h1>Drizzle Examples</h1>
-          <p>Examples of how to get started with Drizzle in various situations.</p>
+          <h1>Reserve</h1>
+          <p></p>
         </div>
+        
+        <div className="section">
+          <h2>Balances</h2>
+          <Card>
+            <p>
+              <img src={usdcLogo} alt="usdc-logo" />
+              <ContractData 
+                contract="USDC" 
+                method="balanceOf" 
+                methodArgs={[ this.props.accounts[0] ]} 
+                render={ formatNumber(6, 2) }
+              />
+            </p>
+          </Card>
+          <Card>
+            <p>
+              <img src={tusdLogo} alt="tusd-logo" />
+              <ContractData 
+                contract="TUSD" 
+                method="balanceOf" 
+                methodArgs={[ this.props.accounts[0] ]} 
+                render={ formatNumber(18, 2) }
+              />      
+            </p>
+          </Card>
+          <Card>
+            <p>
+              <img src={paxLogo} alt="pax-logo" />
+              <ContractData 
+                contract="PAX" 
+                method="balanceOf" 
+                methodArgs={[ this.props.accounts[0] ]} 
+                render={ formatNumber(18, 2) }
+              />      
+            </p>
+          </Card>
+          <Card>
+            <p>
+              <img src={rsvLogo} alt="rsv-logo" />
+              <ContractData 
+                contract="Reserve" 
+                method="balanceOf" 
+                methodArgs={[ this.props.accounts[0] ]} 
+                render={ formatNumber(18, 2) }
+              />   
+            </p>
 
-        <div className="section">
-          <h2>Active Account</h2>
-          <AccountData accountIndex={0} units="ether" precision={3} />
-        </div>
-
-        <div className="section">
-          <h2>SimpleStorage</h2>
           <p>
-            This shows a simple ContractData component with no arguments, along with
-            a form to set its value.
+            <Button variant="contained" color="primary">
+              Generate
+            </Button>
           </p>
           <p>
-            <strong>Stored Value: </strong>
-            <ContractData contract="SimpleStorage" method="storedData" />
+            <Button variant="outlined" color="secondary">
+              Redeem
+            </Button>
           </p>
-          <ContractForm contract="SimpleStorage" method="set" />
-        </div>
-
-        <div className="section">
-          <h2>TutorialToken</h2>
-          <p>
-            Here we have a form with custom, friendly labels. Also note the token
-            symbol will not display a loading indicator. We've suppressed it with
-            the <code>hideIndicator</code> prop because we know this variable is
-            constant.
-          </p>
-          <p>
-            <strong>Total Supply: </strong>
-            <ContractData
-              contract="TutorialToken"
-              method="totalSupply"
-              methodArgs={[{ from: this.props.accounts[0] }]}
-            />{" "}
-            <ContractData contract="TutorialToken" method="symbol" hideIndicator />
-          </p>
-          <p>
-            <strong>My Balance: </strong>
-            <ContractData
-              contract="TutorialToken"
-              method="balanceOf"
-              methodArgs={[this.props.accounts[0]]}
-            />
-          </p>
-          <h3>Send Tokens</h3>
-          <ContractForm
-            contract="TutorialToken"
-            method="transfer"
-            labels={["To Address", "Amount to Send"]}
-          />
-        </div>
-        <div className="section">
-          <h2>ComplexStorage</h2>
-          <p>
-            Finally this contract shows data types with additional considerations.
-            Note in the code the strings below are converted from bytes to UTF-8
-            strings and the device data struct is iterated as a list.
-          </p>
-          <p>
-            <strong>String 1: </strong>
-            <ContractData contract="ComplexStorage" method="string1" toUtf8 />
-          </p>
-          <p>
-            <strong>String 2: </strong>
-            <ContractData contract="ComplexStorage" method="string2" toUtf8 />
-          </p>
-          <strong>Single Device Data: </strong>
-          <ContractData contract="ComplexStorage" method="singleDD" />
-        </div>
+          </Card>
+        </div>  
       </div>
     );
+
   }
 }
-
 
 const mapStateToProps = state => {
   return {
     accounts: state.accounts,
+    USDC: state.contracts.USDC,
+    TUSD: state.contracts.TUSD,
+    PAX: state.contracts.PAX,
+    Reserve: state.contracts.Reserve,
+    Manager: state.contracts.Manager,
     SimpleStorage: state.contracts.SimpleStorage,
     TutorialToken: state.contracts.TutorialToken,
     drizzleStatus: state.drizzleStatus,
