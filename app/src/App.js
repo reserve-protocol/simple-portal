@@ -1,22 +1,24 @@
-import React, { Component } from "react";
-import { DrizzleProvider } from "@drizzle/react-plugin";
-import { LoadingContainer } from "@drizzle/react-components";
+import React from 'react';
+import MyComponent from './MyComponent';
+import { DrizzleContext } from "drizzle-react";
+
 
 import "./App.css";
 
-import drizzleOptions from "./drizzleOptions";
-import MyContainer from "./MyContainer";
-
-class App extends Component {
-  render() {
-    return (
-      <DrizzleProvider options={drizzleOptions}>
-        <LoadingContainer>
-          <MyContainer />
-        </LoadingContainer>
-      </DrizzleProvider>
-    );
-  }
-}
-
+export const App = () => (
+  <DrizzleContext.Consumer>
+    {drizzleContext => {
+      const { drizzle, 
+              drizzleState, 
+              initialized } = drizzleContext;
+     if(!initialized){
+        return "Loading...";
+      }
+      
+      return <MyComponent 
+         drizzle={drizzle} 
+         drizzleState={drizzleState} />
+  }}
+  </DrizzleContext.Consumer>
+)
 export default App;
