@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 function formatNumber (nativeDecimals, showDecimals) {
   return function(arg) {
-    return Math.round(arg / Math.pow(10, nativeDecimals)).toFixed(showDecimals);
+    return (arg / Math.pow(10, nativeDecimals)).toFixed(showDecimals);
   }
 };
 
