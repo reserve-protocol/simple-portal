@@ -18,6 +18,7 @@ const drizzleOptions = {
   polls: {
     accounts: 1500,
   },
+  syncAlways: true
 };
 
 export default drizzleOptions;

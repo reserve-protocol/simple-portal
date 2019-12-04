@@ -36,57 +36,6 @@ export default class MyComponent extends Component {
   }
 
   componentDidMount() {
-    const newState = this.refreshBalances();
-    this.setState(newState);
-  }
-
-  componentDidUpdate(prevProps) {
-    const { drizzle, drizzleState } = this.props;
-
-    // State transitions for max issuable count.
-    const lastIssuableRSV = util.getIssuableRSV(
-      prevProps.drizzleState.contracts.USDC.balanceOf[this.state.usdc.bal], 
-      prevProps.drizzleState.contracts.TUSD.balanceOf[this.state.tusd.bal], 
-      prevProps.drizzleState.contracts.PAX.balanceOf[this.state.pax.bal]
-    );
-    const issuableRSV = util.getIssuableRSV(
-      drizzleState.contracts.USDC.balanceOf[this.state.usdc.bal], 
-      drizzleState.contracts.TUSD.balanceOf[this.state.tusd.bal], 
-      drizzleState.contracts.PAX.balanceOf[this.state.pax.bal]
-    );
-    if (issuableRSV !== lastIssuableRSV) {
-      const newState = merge(this.state, { generate: { max: issuableRSV }});
-      this.setState(newState);
-    }
-
-    // State transitions for generate flow.
-    const generateSuccessCount = util.countOccurrences(this.getGenerateTxs(), "success");
-    if (generateSuccessCount === 3 && this.state.generate.status === util.APPROVING) {
-      console.log("approving -> issuing");
-      const amt = drizzle.web3.utils.toBN(this.state.generate.cur).mul(util.EIGHTEEN);
-
-      const managerIssue = drizzle.contracts.Manager.methods.issue.cacheSend(amt, { from: drizzleState.accounts[0], gas: 9000000 });
-      const newState = merge(this.state, { 
-        generate: { status: util.ISSUING, },
-        manager: { issue: managerIssue }
-      });
-      this.setState(newState);
-    } else if (generateSuccessCount === 4 && this.state.generate.status === util.ISSUING) {
-      console.log("issuing -> done");
-      console.log(this.state);
-      const newState = this.refreshBalances();
-      const newerState = merge(newState, { generate: { status: "done" }});
-      console.log(newerState);
-      console.log(this.props.drizzle);
-      console.log(this.props.drizzleState);
-      this.setState(newerState);
-    }
-    console.log("rsv balance");
-    console.log(drizzleState.contracts.Reserve.balanceOf[this.state.rsv.bal]);
-
-  }
-
-  refreshBalances = () => {
     const { drizzle, drizzleState } = this.props;
     const account = drizzleState.accounts[0];
     console.log("account ", account);
@@ -102,7 +51,58 @@ export default class MyComponent extends Component {
       pax: { bal: paxKey },
       rsv: { bal: rsvKey } 
     });
-    return newState;
+    this.setState(newState);
+  }
+
+  componentDidUpdate(prevProps) {
+    const { drizzle, drizzleState } = this.props;
+
+    // Vars to update.
+    var issuableRSV;
+    var generateStatus = this.state.generate.status;
+    var managerIssue = this.state.manager.issue;
+
+    // State transitions for max issuable count.
+    const lastIssuableRSV = util.getIssuableRSV(
+      prevProps.drizzleState.contracts.USDC.balanceOf[this.state.usdc.bal], 
+      prevProps.drizzleState.contracts.TUSD.balanceOf[this.state.tusd.bal], 
+      prevProps.drizzleState.contracts.PAX.balanceOf[this.state.pax.bal]
+    );
+    issuableRSV = util.getIssuableRSV(
+      drizzleState.contracts.USDC.balanceOf[this.state.usdc.bal], 
+      drizzleState.contracts.TUSD.balanceOf[this.state.tusd.bal], 
+      drizzleState.contracts.PAX.balanceOf[this.state.pax.bal]
+    );
+
+    // State transitions for generate flow.
+    const generateSuccessCount = util.countOccurrences(this.getGenerateTxs(), "success");
+    if (generateSuccessCount === 3 && this.state.generate.status === util.APPROVING) {
+      console.log("approving -> issuing");
+      const amt = drizzle.web3.utils.toBN(this.state.generate.cur).mul(util.EIGHTEEN);
+      managerIssue = drizzle.contracts.Manager.methods.issue.cacheSend(amt, { from: drizzleState.accounts[0], gas: 1000000 });
+      generateStatus = util.ISSUING;
+    } else if (generateSuccessCount === 4 && this.state.generate.status === util.ISSUING) {
+      console.log("issuing -> done");
+      generateStatus = util.DONE;
+    }
+
+    // Update state all at once.
+    if (
+      issuableRSV !== lastIssuableRSV || 
+      generateStatus !== this.state.generate.status ||
+      managerIssue !== this.state.manager.issue
+    ) {
+      const newState = merge(this.state, { 
+        generate: { max: issuableRSV, status: generateStatus },
+        manager: { issue: managerIssue }
+      });
+      this.setState(newState);
+    }
+
+  }
+
+  refreshBalances = () => {
+
   }
 
   getGenerateTxs = () => {
