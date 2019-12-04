@@ -17,30 +17,16 @@ import paxLogo from "./assets/pax.png";
 import rsvLogo from "./assets/rsv.svg";
 
 import TokenBalance from "./components/TokenBalance.js";
+import MyModal from "./components/MyModal.js";
+import * as util from "./util.js";
 
-const BN = require('bn.js');
-const TEN = new BN(10)
-const SIX = TEN.pow(new BN(6));
-const TWELVE = TEN.pow(new BN(12));
-const EIGHTEEN = TEN.pow(new BN(18));
-
-function getIssuableRSV(usdc, tusd, pax) {
-    if (!usdc || !tusd || !pax) { 
-      return 0; 
-    }
-    const usdcBN = new BN(usdc.value);
-    const tusdBN = new BN(tusd.value);
-    const paxBN = new BN(pax.value);
-
-    return BN.min(BN.min(usdcBN.mul(TWELVE), tusdBN), paxBN).mul(new BN(3)).div(EIGHTEEN).toNumber();
-  };
 
 export default class MyComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      generate: { min: 0, max: 0, cur: 0 },
-      redeem: { min: 0, max: 0, cur: 0 },
+      generate: { min: 0, max: 0, cur: 0, status: util.NOTSTARTED },
+      redeem: { min: 0, max: 0, cur: 0, status: util.NOTSTARTED },
       usdc: { bal: null, approve: null, decimals: 6 },
       tusd: { bal: null, approve: null, decimals: 18 },
       pax: { bal: null, approve: null, decimals: 18 },
@@ -50,6 +36,57 @@ export default class MyComponent extends Component {
   }
 
   componentDidMount() {
+    const newState = this.refreshBalances();
+    this.setState(newState);
+  }
+
+  componentDidUpdate(prevProps) {
+    const { drizzle, drizzleState } = this.props;
+
+    // State transitions for max issuable count.
+    const lastIssuableRSV = util.getIssuableRSV(
+      prevProps.drizzleState.contracts.USDC.balanceOf[this.state.usdc.bal], 
+      prevProps.drizzleState.contracts.TUSD.balanceOf[this.state.tusd.bal], 
+      prevProps.drizzleState.contracts.PAX.balanceOf[this.state.pax.bal]
+    );
+    const issuableRSV = util.getIssuableRSV(
+      drizzleState.contracts.USDC.balanceOf[this.state.usdc.bal], 
+      drizzleState.contracts.TUSD.balanceOf[this.state.tusd.bal], 
+      drizzleState.contracts.PAX.balanceOf[this.state.pax.bal]
+    );
+    if (issuableRSV !== lastIssuableRSV) {
+      const newState = merge(this.state, { generate: { max: issuableRSV }});
+      this.setState(newState);
+    }
+
+    // State transitions for generate flow.
+    const generateSuccessCount = util.countOccurrences(this.getGenerateTxs(), "success");
+    if (generateSuccessCount === 3 && this.state.generate.status === util.APPROVING) {
+      console.log("approving -> issuing");
+      const amt = drizzle.web3.utils.toBN(this.state.generate.cur).mul(util.EIGHTEEN);
+
+      const managerIssue = drizzle.contracts.Manager.methods.issue.cacheSend(amt, { from: drizzleState.accounts[0], gas: 9000000 });
+      const newState = merge(this.state, { 
+        generate: { status: util.ISSUING, },
+        manager: { issue: managerIssue }
+      });
+      this.setState(newState);
+    } else if (generateSuccessCount === 4 && this.state.generate.status === util.ISSUING) {
+      console.log("issuing -> done");
+      console.log(this.state);
+      const newState = this.refreshBalances();
+      const newerState = merge(newState, { generate: { status: "done" }});
+      console.log(newerState);
+      console.log(this.props.drizzle);
+      console.log(this.props.drizzleState);
+      this.setState(newerState);
+    }
+    console.log("rsv balance");
+    console.log(drizzleState.contracts.Reserve.balanceOf[this.state.rsv.bal]);
+
+  }
+
+  refreshBalances = () => {
     const { drizzle, drizzleState } = this.props;
     const account = drizzleState.accounts[0];
     console.log("account ", account);
@@ -65,19 +102,30 @@ export default class MyComponent extends Component {
       pax: { bal: paxKey },
       rsv: { bal: rsvKey } 
     });
-    this.setState(newState);
+    return newState;
   }
 
-  componentDidUpdate() {
-    const { USDC, TUSD, PAX, Reserve } = this.props.drizzleState.contracts;
-    const usdcBalance = USDC.balanceOf[this.state.usdc.bal];
-    const tusdBalance = TUSD.balanceOf[this.state.tusd.bal];
-    const paxBalance = PAX.balanceOf[this.state.pax.bal];
-    const rsvBalance = Reserve.balanceOf[this.state.rsv.bal];
-    const issuableRSV = getIssuableRSV(usdcBalance, tusdBalance, paxBalance);
-    if (issuableRSV != this.state.generate.max) {
-      const newState = merge(this.state, { generate: { max: issuableRSV }});
-      this.setState(newState);
+  getGenerateTxs = () => {
+    return [
+      this.getTxStatus(this.state.usdc.approve), 
+      this.getTxStatus(this.state.tusd.approve), 
+      this.getTxStatus(this.state.pax.approve), 
+      this.getTxStatus(this.state.manager.issue)
+    ];
+  }
+
+  getRedeemTxs = () => {
+    return [
+      this.getTxStatus(this.state.rsv.approve), 
+      this.getTxStatus(this.state.manager.redeem)
+    ];
+  }
+
+  getTxStatus = (txId) => {
+    const txHash = this.props.drizzleState.transactionStack[txId];
+    const txStatus = this.props.drizzleState.transactions[txHash]
+    if (txStatus) {
+      return txStatus.status;
     }
   }
 
@@ -93,19 +141,33 @@ export default class MyComponent extends Component {
 
   generate = () => {
     console.log(this.state.generate.cur);
-    const { drizzle } = this.props;
+    const { drizzle, drizzleState } = this.props;
     const managerAddress = drizzle.contracts.Manager.address;
-    const amt = drizzle.web3.utils.toBN(this.state.generate.cur).div(drizzle.web3.utils.toBN(3));
-    const usdcApprove = drizzle.contracts.USDC.methods.approve.cacheSend(managerAddress, amt.mul(SIX));
-    const tusdApprove = drizzle.contracts.TUSD.methods.approve.cacheSend(managerAddress, amt.mul(EIGHTEEN));
-    const paxApprove = drizzle.contracts.PAX.methods.approve.cacheSend(managerAddress, amt.mul(EIGHTEEN));
-    const managerIssue = drizzle.contracts.Manager.methods.issue.cacheSend(amt.mul(EIGHTEEN));
+    const usdcAmt = drizzle.web3.utils.toBN(this.state.generate.cur).mul(drizzle.web3.utils.toBN(333334));
+    const tusdAmt = drizzle.web3.utils.toBN(this.state.generate.cur).mul(drizzle.web3.utils.toBN(333333)).mul(util.TWELVE);
+    const paxAmt = drizzle.web3.utils.toBN(this.state.generate.cur).mul(drizzle.web3.utils.toBN(333333)).mul(util.TWELVE);
+
+    const usdcApprove = drizzle.contracts.USDC.methods.approve.cacheSend(
+      managerAddress, 
+      usdcAmt, 
+      { from: drizzleState.accounts[0], gas: 200000, to: drizzle.contracts.USDC.address }
+    );
+    const tusdApprove = drizzle.contracts.TUSD.methods.approve.cacheSend(
+      managerAddress, 
+      tusdAmt, 
+      { from: drizzleState.accounts[0], gas: 200000, to: drizzle.contracts.TUSD.address }
+    );
+    const paxApprove = drizzle.contracts.PAX.methods.approve.cacheSend(
+      managerAddress, 
+      paxAmt, 
+      { from: drizzleState.accounts[0], gas: 200000, to: drizzle.contracts.PAX.address }
+    );
 
     const newState = merge(this.state, { 
+      generate: { status: util.APPROVING },
       usdc: { approve: usdcApprove },  
       tusd: { approve: tusdApprove },  
-      pax: { approve: paxApprove },  
-      manager: { issue: managerIssue }  
+      pax: { approve: paxApprove }
     });
     this.setState(newState);
   }
@@ -114,7 +176,7 @@ export default class MyComponent extends Component {
     console.log(this.state.redeem.cur);
     const { drizzle } = this.props;
     const managerAddress = drizzle.contracts.Manager.address;
-    const amt = drizzle.web3.utils.toBN(this.state.redeem.cur).mul(EIGHTEEN);
+    const amt = drizzle.web3.utils.toBN(this.state.redeem.cur).mul(util.EIGHTEEN);
     const rsvApprove = drizzle.contracts.Reserve.methods.approve.cacheSend(managerAddress, amt);
     const managerRedeem = drizzle.contracts.Manager.methods.redeem.cacheSend(amt);
 
@@ -135,6 +197,18 @@ export default class MyComponent extends Component {
 
     return (
       <div className="App">
+        <MyModal 
+          texts={util.GENERATE_TEXT}
+          txStatuses={this.getGenerateTxs()}
+          on={this.state.generate.status !== util.NOTSTARTED}
+          onExited={() => {
+            const newState = merge(this.state, { generate: { status: util.NOTSTARTED }});
+            this.setState(newState);
+          }}
+        />
+
+
+
         <div>
           <img src={bigRSVLogo} alt="drizzle-logo" />
           <h1>Reserve</h1>
@@ -156,12 +230,13 @@ export default class MyComponent extends Component {
               type="number"
               InputProps={{ inputProps: this.state.generate }}
               onChange={this.handleGenerateChange}
+              disabled={this.state.generate.status !== util.NOTSTARTED}
             />
             <Button 
               variant="contained" 
               color="primary" 
               onClick={this.generate} 
-              disabled={this.state.generate.cur == 0}
+              disabled={this.state.generate.cur === 0}
             >
               Generate
               <ArrowUpward/>
@@ -177,7 +252,7 @@ export default class MyComponent extends Component {
               variant="outlined" 
               color="secondary"
               onClick={this.redeem}
-              disabled={this.state.redeem.cur == 0}
+              disabled={this.state.redeem.cur === 0}
             >
               Redeem
               <ArrowDownward/>
