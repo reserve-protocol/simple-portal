@@ -59,8 +59,11 @@ export default class MyComponent extends Component {
 
     // Vars to update.
     var issuableRSV;
+    var redeemableRSV;
     var generateStatus = this.state.generate.status;
+    var redeemStatus = this.state.redeem.status;
     var managerIssue = this.state.manager.issue;
+    var managerRedeem = this.state.manager.redeem;
 
     // State transitions for max issuable count.
     const lastIssuableRSV = util.getIssuableRSV(
@@ -74,6 +77,10 @@ export default class MyComponent extends Component {
       drizzleState.contracts.PAX.balanceOf[this.state.pax.bal]
     );
 
+    // State transitions for max redeem count.
+    const lastRedeemableRSV = util.getRedeemableRSV(prevProps.drizzleState.contracts.Reserve.balanceOf[this.state.rsv.bal]);
+    redeemableRSV = util.getRedeemableRSV(drizzleState.contracts.Reserve.balanceOf[this.state.rsv.bal]);
+    
     // State transitions for generate flow.
     const generateSuccessCount = util.countOccurrences(this.getGenerateTxs(), "success");
     if (generateSuccessCount === 3 && this.state.generate.status === util.APPROVING) {
@@ -86,22 +93,34 @@ export default class MyComponent extends Component {
       generateStatus = util.DONE;
     }
 
+    // State transitions for redeem flow.
+    const redeemSuccessCount = util.countOccurrences(this.getRedeemTxs(), "success");
+    if (redeemSuccessCount === 1 && this.state.redeem.status === util.APPROVING) {
+      console.log("approving -> redeeming");
+      const amt = drizzle.web3.utils.toBN(this.state.redeem.cur).mul(util.EIGHTEEN);
+      managerRedeem = drizzle.contracts.Manager.methods.redeem.cacheSend(amt, { from: drizzleState.accounts[0], gas: 1000000 });
+      redeemStatus = util.REDEEMING;
+    } else if (redeemSuccessCount === 2 && this.state.redeem.status === util.REDEEMING) {
+      console.log("redeem -> done");
+      redeemStatus = util.DONE;
+    }
+
     // Update state all at once.
     if (
       issuableRSV !== lastIssuableRSV || 
+      redeemableRSV !== lastRedeemableRSV ||
       generateStatus !== this.state.generate.status ||
-      managerIssue !== this.state.manager.issue
+      redeemStatus !== this.state.redeem.status || 
+      managerIssue !== this.state.manager.issue ||
+      managerRedeem !== this.state.manager.redeem
     ) {
       const newState = merge(this.state, { 
         generate: { max: issuableRSV, status: generateStatus },
-        manager: { issue: managerIssue }
+        redeem: { max: redeemableRSV, status: redeemStatus },
+        manager: { issue: managerIssue, redeem: managerRedeem }
       });
       this.setState(newState);
     }
-
-  }
-
-  refreshBalances = () => {
 
   }
 
@@ -174,15 +193,19 @@ export default class MyComponent extends Component {
 
   redeem = () => {
     console.log(this.state.redeem.cur);
-    const { drizzle } = this.props;
+    const { drizzle, drizzleState } = this.props;
     const managerAddress = drizzle.contracts.Manager.address;
     const amt = drizzle.web3.utils.toBN(this.state.redeem.cur).mul(util.EIGHTEEN);
-    const rsvApprove = drizzle.contracts.Reserve.methods.approve.cacheSend(managerAddress, amt);
-    const managerRedeem = drizzle.contracts.Manager.methods.redeem.cacheSend(amt);
+
+    const rsvApprove = drizzle.contracts.Reserve.methods.approve.cacheSend(
+      managerAddress, 
+      amt, 
+      { from: drizzleState.accounts[0], gas: 200000, to: drizzle.contracts.Reserve.address }
+    );
 
     const newState = merge(this.state, { 
-      rsv: { approve: rsvApprove },  
-      manager: { redeem: managerRedeem }  
+      redeem: { status: util.APPROVING },
+      rsv: { approve: rsvApprove }  
     });
     this.setState(newState);
   }
@@ -206,7 +229,15 @@ export default class MyComponent extends Component {
             this.setState(newState);
           }}
         />
-
+        <MyModal 
+          texts={util.REDEEM_TEXT}
+          txStatuses={this.getRedeemTxs()}
+          on={this.state.redeem.status !== util.NOTSTARTED}
+          onExited={() => {
+            const newState = merge(this.state, { redeem: { status: util.NOTSTARTED }});
+            this.setState(newState);
+          }}
+        />
 
 
         <div>

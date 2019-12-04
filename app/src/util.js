@@ -9,7 +9,8 @@ const TEN = new BN(10)
 export const SIX = TEN.pow(new BN(6));
 export const TWELVE = TEN.pow(new BN(12));
 export const EIGHTEEN = TEN.pow(new BN(18));
-export const GENERATE_TEXT = ["Approve: USDC", "Approve: TUSD", "Approve: PAX", "Generate: RSV"];
+export const GENERATE_TEXT = ["Approve: USDC", "Approve: TUSD", "Approve: PAX", "Generate RSV: Manager"];
+export const REDEEM_TEXT = ["Approve: RSV", "Redeem RSV: Manager"];
 
 export function getIssuableRSV(usdc, tusd, pax) {
   if (!usdc || !tusd || !pax) { 
@@ -21,6 +22,15 @@ export function getIssuableRSV(usdc, tusd, pax) {
 
   return BN.min(BN.min(usdcBN.mul(TWELVE), tusdBN), paxBN).mul(new BN(3)).div(EIGHTEEN).toNumber();
 };
+
+export function getRedeemableRSV(rsv) {
+  if (!rsv) {
+    return 0;
+  }
+
+  return rsv.value;
+}
+
 
 export function countOccurrences(arr, elem) {
   var count = 0;
