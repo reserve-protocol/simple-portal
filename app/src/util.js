@@ -12,6 +12,7 @@ export const TWELVE = TEN.pow(new BN(12));
 export const EIGHTEEN = TEN.pow(new BN(18));
 export const GENERATE_TEXT = ["Approve: USDC", "Approve: TUSD", "Approve: PAX", "Generate RSV: Manager"];
 export const REDEEM_TEXT = ["Approve: RSV", "Redeem RSV: Manager"];
+export const METAMASK_TEXT = "The Metamask extension is required to generate or redeem RSV";
 
 export function getIssuableRSV(usdc, tusd, pax) {
   if (!usdc || !tusd || !pax) { 

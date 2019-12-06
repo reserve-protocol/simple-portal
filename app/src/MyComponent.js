@@ -11,6 +11,7 @@ import {
 } from "@material-ui/icons";
 import {merge} from 'lodash/fp';
 
+import metamaskLogo from "./assets/metamask.jpeg";
 import bigRSVLogo from "./assets/reserve-logo.png";
 import usdcLogo from "./assets/usdc.png";
 import tusdLogo from "./assets/tusd.png";
@@ -18,7 +19,8 @@ import paxLogo from "./assets/pax.png";
 import rsvLogo from "./assets/rsv.svg";
 
 import TokenBalance from "./components/TokenBalance.js";
-import MyModal from "./components/MyModal.js";
+import MyProgressModal from "./components/MyProgressModal.js";
+import MyDialogueModal from "./components/MyDialogueModal.js";
 import * as util from "./util.js";
 
 
@@ -241,7 +243,13 @@ export default class MyComponent extends Component {
     return (
       <div className="App">
         <CssBaseline />
-        <MyModal 
+        <MyDialogueModal
+          title="Connect Metamask"
+          image={metamaskLogo}
+          text={util.METAMASK_TEXT}
+          on={!this.props.initialized}
+        />
+        <MyProgressModal 
           texts={util.GENERATE_TEXT}
           txStatuses={this.getGenerateTxs()}
           on={this.state.generate.status !== util.NOTSTARTED}
@@ -250,7 +258,7 @@ export default class MyComponent extends Component {
             this.setState(newState);
           }}
         />
-        <MyModal 
+        <MyProgressModal 
           texts={util.REDEEM_TEXT}
           txStatuses={this.getRedeemTxs()}
           on={this.state.redeem.status !== util.NOTSTARTED}

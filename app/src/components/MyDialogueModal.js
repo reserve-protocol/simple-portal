@@ -2,15 +2,9 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   Backdrop,
-  CircularProgress,
   Fade,
   Modal
 } from '@material-ui/core';
-import {
-  Check,
-  Close,
-  Pause
-} from "@material-ui/icons";
 import { green } from '@material-ui/core/colors';
 
 
@@ -21,14 +15,15 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
   },
   paper: {
+    borderRadius: "10px",
     backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
+    border: '0px solid #000',
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
   },
 }));
 
-export default function MyModal(props) {
+export default function MyDialogueModal(props) {
   const classes = useStyles();
 
   return (
@@ -47,27 +42,13 @@ export default function MyModal(props) {
       >
         <Fade in={props.on}>
           <div className={classes.paper}>
-            <h2 id="transition-modal-title">Transition modal</h2>
-            <ul>
-              {props.texts.map(function(text, index) {
-                var symbolHTML;
-                switch (props.txStatuses[index]) {
-                  case "success":
-                    symbolHTML = <Check fontSize="large" style={{ color: green[500] }}/>;
-                    break;
-                  case "pending":
-                    symbolHTML = <CircularProgress />;
-                    break;
-                  case "failure":
-                    symbolHTML = <Close fontSize="large" color="secondary" />;
-                    break;
-                  default:
-                    symbolHTML = <Pause fontSize="large" />;
-
-                }
-                return <li key={ index }>{text}{symbolHTML}</li>;
-              })}
-            </ul>
+            <h2 id="transition-modal-title">{props.title}</h2>
+            <p>
+              <img src={props.image} width={200} height={200} alt="drizzle-logo" />
+            </p>
+            <p>
+              <label>{props.text}</label>
+            </p>
           </div>
         </Fade>
       </Modal>
