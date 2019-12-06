@@ -12,7 +12,8 @@ code {
     monospace;
 }
 
-.dialogue_modal_title {
+.modal_title {
+    margin-top: -7px;
     font-family: Roboto;
     font-style: normal;
     font-weight: 500;
@@ -23,4 +24,16 @@ code {
     text-align: center;
 
     color: #454545;
+}
+
+.modal_text {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 15px;
+    line-height: 20px;
+    /* or 133% */
+    text-align: center;
+
+    color: #7C7979;
 }

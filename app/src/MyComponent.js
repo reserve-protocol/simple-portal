@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { 
+  AppBar,
   Button, 
   Card,
   CssBaseline,
@@ -8,8 +9,7 @@ import {
 } from "@material-ui/core";
 import {
   ArrowUpward,
-  ArrowDownward,
-  Help
+  ArrowDownward
 } from "@material-ui/icons";
 import {merge} from 'lodash/fp';
 
@@ -22,8 +22,8 @@ import rsvLogo from "./assets/rsv.svg";
 import rsvCombineLogo from "./assets/rsv_combine.png";
 
 import TokenBalance from "./components/TokenBalance.js";
-import MyProgressModal from "./components/MyProgressModal.js";
-import MyDialogueModal from "./components/MyDialogueModal.js";
+import MyModal from "./components/MyModal.js";
+import MyHeader from "./components/MyHeader.js";
 import * as util from "./util.js";
 
 
@@ -39,6 +39,7 @@ export default class MyComponent extends Component {
       rsv: { bal: null, approve: null, generate: null, decimals: 18 },
       manager: { issue: null, redeem: null },
       showingHelp: false,
+      hideConnectMetamask: false,
     };
   }
 
@@ -47,6 +48,7 @@ export default class MyComponent extends Component {
       return;
     }
     const { drizzle, drizzleState } = this.props;
+    console.log(drizzle);
     const account = drizzleState.accounts[0];
     console.log("account ", account);
 
@@ -180,6 +182,9 @@ export default class MyComponent extends Component {
   }
 
   generate = () => {
+    if (!this.props.initialized) {
+      return;
+    }
     console.log(this.state.generate.cur);
     const { drizzle, drizzleState } = this.props;
     const managerAddress = drizzle.contracts.Manager.address;
@@ -213,6 +218,9 @@ export default class MyComponent extends Component {
   }
 
   redeem = () => {
+    if (!this.props.initialized) {
+      return;
+    }
     console.log(this.state.redeem.cur);
     const { drizzle, drizzleState } = this.props;
     const managerAddress = drizzle.contracts.Manager.address;
@@ -249,15 +257,18 @@ export default class MyComponent extends Component {
     }
 
     return (
-      <div className="App">
+      <div>
         <CssBaseline />
-        <MyDialogueModal
+        <MyModal
           title="Connect Metamask"
           image={metamaskLogo}
           text={util.METAMASK_TEXT}
-          on={!this.props.initialized}
+          on={!this.props.initialized && !this.state.hideConnectMetamask}
+          onExited={() => {
+            this.setState({ hideConnectMetamask: true });
+          }}
         />
-        <MyDialogueModal
+        <MyModal
           title=""
           image={rsvCombineLogo}
           text={util.HELP_TEXT}
@@ -266,7 +277,7 @@ export default class MyComponent extends Component {
             this.setState({ showingHelp: false });
           }}
         />
-        <MyProgressModal 
+        <MyModal 
           texts={util.GENERATE_TEXT}
           txStatuses={this.getGenerateTxs()}
           on={this.state.generate.status !== util.NOTSTARTED}
@@ -275,7 +286,7 @@ export default class MyComponent extends Component {
             this.setState(newState);
           }}
         />
-        <MyProgressModal 
+        <MyModal 
           texts={util.REDEEM_TEXT}
           txStatuses={this.getRedeemTxs()}
           on={this.state.redeem.status !== util.NOTSTARTED}
@@ -285,12 +296,14 @@ export default class MyComponent extends Component {
           }}
         />
 
+        <MyHeader initialized={this.props.initialized}/>
 
         <div>
           <img src={bigRSVLogo} alt="drizzle-logo" />
           <h1>Reserve</h1>
         </div>
-        
+      
+
         <div className="section">
           <h2>Balances</h2>
           <Card>

@@ -9,6 +9,7 @@ import {
 import {
   Check,
   Close,
+  CloseRounded,
   Pause
 } from "@material-ui/icons";
 import { green } from '@material-ui/core/colors';
@@ -21,15 +22,17 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
   },
   paper: {
+    borderRadius: "10px",
     backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
+    border: '0px solid #000',
     boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
+    padding: theme.spacing(3, 3, 3),
   },
 }));
 
-export default function MyProgressModal(props) {
+export default function MyModal(props) {
   const classes = useStyles();
+  var texts = props.texts ? props.texts : [];
 
   return (
     <div>
@@ -47,9 +50,16 @@ export default function MyProgressModal(props) {
       >
         <Fade in={props.on}>
           <div className={classes.paper}>
-            <h2 id="transition-modal-title" className="dialogue_modal_title">Transition modal</h2>
+            <CloseRounded fontSize="small" style={{color: "#6B1CD1"}} onClick={props.onExited} />
+            <h2 id="transition-modal-title" className="modal_title">{props.title}</h2>
+            <p style={{textAlign: "center"}}>
+              <img src={props.image} width={200} height={200} alt="drizzle-logo" />
+            </p>
+            <p className="modal_text">
+              <label>{props.text}</label>
+            </p>
             <ul>
-              {props.texts.map(function(text, index) {
+              {texts.map(function(text, index) {
                 var symbolHTML;
                 switch (props.txStatuses[index]) {
                   case "success":
@@ -65,7 +75,7 @@ export default function MyProgressModal(props) {
                     symbolHTML = <Pause fontSize="large" />;
 
                 }
-                return <li key={ index }>{text}{symbolHTML}</li>;
+                return <li className="modal_text" key={ index }>{text}{symbolHTML}</li>;
               })}
             </ul>
           </div>
