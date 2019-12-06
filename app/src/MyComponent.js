@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { 
   Button, 
   Card,
+  CssBaseline,
   TextField
 } from "@material-ui/core";
 import {
@@ -36,6 +37,9 @@ export default class MyComponent extends Component {
   }
 
   componentDidMount() {
+    if (!this.props.initialized) {
+      return;
+    }
     const { drizzle, drizzleState } = this.props;
     const account = drizzleState.accounts[0];
     console.log("account ", account);
@@ -55,6 +59,10 @@ export default class MyComponent extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    if (!this.props.initialized || !prevProps.initialized) {
+      this.componentDidMount();
+      return;
+    }
     const { drizzle, drizzleState } = this.props;
 
     // Vars to update.
@@ -141,6 +149,9 @@ export default class MyComponent extends Component {
   }
 
   getTxStatus = (txId) => {
+    if (!this.props.initialized) {
+      return;
+    }
     const txHash = this.props.drizzleState.transactionStack[txId];
     const txStatus = this.props.drizzleState.transactions[txHash]
     if (txStatus) {
@@ -212,14 +223,24 @@ export default class MyComponent extends Component {
 
 
   render() {
-    const { USDC, TUSD, PAX, Reserve } = this.props.drizzleState.contracts;
-    const usdcBalance = USDC.balanceOf[this.state.usdc.bal];
-    const tusdBalance = TUSD.balanceOf[this.state.tusd.bal];
-    const paxBalance = PAX.balanceOf[this.state.pax.bal];
-    const rsvBalance = Reserve.balanceOf[this.state.rsv.bal];
+    var USDC, TUSD, PAX, Reserve, usdcBalance, tusdBalance, paxBalance, rsvBalance;
+    if (this.props.initialized) {
+      ({ USDC, TUSD, PAX, Reserve } = this.props.drizzleState.contracts);
+      usdcBalance = USDC.balanceOf[this.state.usdc.bal];
+      tusdBalance = TUSD.balanceOf[this.state.tusd.bal];
+      paxBalance = PAX.balanceOf[this.state.pax.bal];
+      rsvBalance = Reserve.balanceOf[this.state.rsv.bal];
+    }
+    if (!usdcBalance || !tusdBalance || !paxBalance || !rsvBalance) {
+      usdcBalance = 0;
+      tusdBalance = 0;
+      paxBalance = 0;
+      rsvBalance = 0;
+    }
 
     return (
       <div className="App">
+        <CssBaseline />
         <MyModal 
           texts={util.GENERATE_TEXT}
           txStatuses={this.getGenerateTxs()}

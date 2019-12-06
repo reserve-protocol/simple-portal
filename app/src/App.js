@@ -11,13 +11,11 @@ export const App = () => (
       const { drizzle, 
               drizzleState, 
               initialized } = drizzleContext;
-     if(!initialized){
-        return "Loading...";
-      }
       
       return <MyComponent 
          drizzle={drizzle} 
-         drizzleState={drizzleState} />
+         drizzleState={drizzleState}
+         initialized={initialized} />
   }}
   </DrizzleContext.Consumer>
 )

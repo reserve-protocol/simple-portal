@@ -8,7 +8,8 @@ import {
 } from '@material-ui/core';
 import {
   Check,
-  Close
+  Close,
+  Pause
 } from "@material-ui/icons";
 import { green } from '@material-ui/core/colors';
 
@@ -52,14 +53,17 @@ export default function MyModal(props) {
                 var symbolHTML;
                 switch (props.txStatuses[index]) {
                   case "success":
-                    symbolHTML = <Check style={{ color: green[500] }}/>;
+                    symbolHTML = <Check fontSize="large" style={{ color: green[500] }}/>;
                     break;
                   case "pending":
                     symbolHTML = <CircularProgress />;
                     break;
-                  default:
-                    symbolHTML = <Close color="secondary" />;
+                  case "failure":
+                    symbolHTML = <Close fontSize="large" color="secondary" />;
                     break;
+                  default:
+                    symbolHTML = <Pause fontSize="large" />;
+
                 }
                 return <li key={ index }>{text}{symbolHTML}</li>;
               })}

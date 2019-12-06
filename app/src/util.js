@@ -1,4 +1,5 @@
 export const NOTSTARTED = "notstarted";
+export const STARTED = "started";
 export const APPROVING = "approving";
 export const ISSUING = "issuing";
 export const REDEEMING = "redeeming";
