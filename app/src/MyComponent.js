@@ -3,11 +3,13 @@ import {
   Button, 
   Card,
   CssBaseline,
+  Fab,
   TextField
 } from "@material-ui/core";
 import {
   ArrowUpward,
-  ArrowDownward
+  ArrowDownward,
+  Help
 } from "@material-ui/icons";
 import {merge} from 'lodash/fp';
 
@@ -17,6 +19,7 @@ import usdcLogo from "./assets/usdc.png";
 import tusdLogo from "./assets/tusd.png";
 import paxLogo from "./assets/pax.png";
 import rsvLogo from "./assets/rsv.svg";
+import rsvCombineLogo from "./assets/rsv_combine.png";
 
 import TokenBalance from "./components/TokenBalance.js";
 import MyProgressModal from "./components/MyProgressModal.js";
@@ -34,7 +37,8 @@ export default class MyComponent extends Component {
       tusd: { bal: null, approve: null, decimals: 18 },
       pax: { bal: null, approve: null, decimals: 18 },
       rsv: { bal: null, approve: null, generate: null, decimals: 18 },
-      manager: { issue: null, redeem: null }
+      manager: { issue: null, redeem: null },
+      showingHelp: false,
     };
   }
 
@@ -171,6 +175,10 @@ export default class MyComponent extends Component {
     this.setState(newState);
   };
 
+  openHelp = () => {
+    this.setState({ showingHelp: true });
+  }
+
   generate = () => {
     console.log(this.state.generate.cur);
     const { drizzle, drizzleState } = this.props;
@@ -248,6 +256,15 @@ export default class MyComponent extends Component {
           image={metamaskLogo}
           text={util.METAMASK_TEXT}
           on={!this.props.initialized}
+        />
+        <MyDialogueModal
+          title=""
+          image={rsvCombineLogo}
+          text={util.HELP_TEXT}
+          on={this.state.showingHelp}
+          onExited={() => {
+            this.setState({ showingHelp: false });
+          }}
         />
         <MyProgressModal 
           texts={util.GENERATE_TEXT}
@@ -339,6 +356,9 @@ export default class MyComponent extends Component {
               value={paxBalance && paxBalance.value}
             />
           </Card>
+
+          <Fab onClick={this.openHelp} style={{backgroundColor: "#E4F14D"}}>?</Fab>
+
         </div>  
       </div>
     );

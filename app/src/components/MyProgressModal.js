@@ -47,7 +47,7 @@ export default function MyProgressModal(props) {
       >
         <Fade in={props.on}>
           <div className={classes.paper}>
-            <h2 id="transition-modal-title">Transition modal</h2>
+            <h2 id="transition-modal-title" className="dialogue_modal_title">Transition modal</h2>
             <ul>
               {props.texts.map(function(text, index) {
                 var symbolHTML;

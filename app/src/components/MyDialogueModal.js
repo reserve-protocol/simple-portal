@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
     border: '0px solid #000',
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
-  },
+  }
 }));
 
 export default function MyDialogueModal(props) {
@@ -42,11 +42,11 @@ export default function MyDialogueModal(props) {
       >
         <Fade in={props.on}>
           <div className={classes.paper}>
-            <h2 id="transition-modal-title">{props.title}</h2>
-            <p>
+            <h2 id="transition-modal-title" className="dialogue_modal_title">{props.title}</h2>
+            <p style={{textAlign: "center"}}>
               <img src={props.image} width={200} height={200} alt="drizzle-logo" />
             </p>
-            <p>
+            <p style={{textAlign: "center"}}>
               <label>{props.text}</label>
             </p>
           </div>

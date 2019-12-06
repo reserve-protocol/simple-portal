@@ -11,3 +11,16 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.dialogue_modal_title {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 25px;
+    line-height: 16px;
+    /* identical to box height, or 64% */
+
+    text-align: center;
+
+    color: #454545;
+}
