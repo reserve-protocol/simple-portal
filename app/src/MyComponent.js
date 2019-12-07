@@ -1,16 +1,11 @@
-import React, { Component } from "react";
-import { 
-  AppBar,
-  Button, 
-  Card,
-  CssBaseline,
-  Fab,
-  TextField
-} from "@material-ui/core";
-import {
-  ArrowUpward,
-  ArrowDownward
-} from "@material-ui/icons";
+import React, { Component } from 'react';
+import AppBar from '@material-ui/core/AppBar';
+import Divider from '@material-ui/core/Divider';
+import Fab from '@material-ui/core/Fab';
+import Grid from '@material-ui/core/Grid';
+import ArrowUpward from '@material-ui/icons/ArrowUpward';
+import ArrowDownward from '@material-ui/icons/ArrowDownward';
+import { makeStyles } from '@material-ui/core/styles';
 import {merge} from 'lodash/fp';
 
 import metamaskLogo from "./assets/metamask.jpeg";
@@ -21,8 +16,10 @@ import paxLogo from "./assets/pax.png";
 import rsvLogo from "./assets/rsv.svg";
 import rsvCombineLogo from "./assets/rsv_combine.png";
 
-import TokenBalance from "./components/TokenBalance.js";
+import SmallTokenBalance from "./components/SmallTokenBalance.js";
+import BigTokenBalance from "./components/BigTokenBalance.js";
 import MyModal from "./components/MyModal.js";
+import MyInputCard from "./components/MyInputCard.js";
 import MyHeader from "./components/MyHeader.js";
 import * as util from "./util.js";
 
@@ -241,6 +238,7 @@ export default class MyComponent extends Component {
 
 
   render() {
+    const rootStyle = { flexGrow: 1 };
     var USDC, TUSD, PAX, Reserve, usdcBalance, tusdBalance, paxBalance, rsvBalance;
     if (this.props.initialized) {
       ({ USDC, TUSD, PAX, Reserve } = this.props.drizzleState.contracts);
@@ -258,7 +256,6 @@ export default class MyComponent extends Component {
 
     return (
       <div>
-        <CssBaseline />
         <MyModal
           title="Connect Metamask"
           image={metamaskLogo}
@@ -296,83 +293,84 @@ export default class MyComponent extends Component {
           }}
         />
 
-        <MyHeader initialized={this.props.initialized}/>
+        <MyHeader initialized={this.props.initialized} />
 
-        <div>
-          <img src={bigRSVLogo} alt="drizzle-logo" />
-          <h1>Reserve</h1>
-        </div>
-      
+        <Divider />
 
-        <div className="section">
-          <h2>Balances</h2>
-          <Card>
-            <TokenBalance 
-              logo={rsvLogo} 
+        <Grid container className={rootStyle} spacing={0} direction="column">
+          <Grid item xs={12} style={{ backgroundColor: util.BLACK }}>      
+            <BigTokenBalance
+              image={bigRSVLogo} 
               nativeDecimals={this.state.rsv.decimals} 
               showDecimals={2} 
               value={rsvBalance && rsvBalance.value}
+              suffix="RSV"
             />
+          </Grid>
+          
+          <Grid item xs={12}>
+            <Grid container className={rootStyle} spacing={0} alignItems="center" justify="center">      
+              <Grid item xs={5}>
+                <MyInputCard
+                  text="Generate RSV  "
+                  arrow=<ArrowUpward fontSize="small" style={{ color: util.GREEN }}/>
+                  max={this.state.generate.max}
+                  onChange={this.handleGenerateChange}
+                  onSubmit={this.generate}
+                />
+              </Grid>
+              <Grid item xs={5}>
+                <MyInputCard
+                  text="Redeem RSV  "
+                  arrow=<ArrowDownward fontSize="small" style={{ color: util.GREEN }}/>
+                  max={this.state.redeem.max}
+                  onChange={this.handleRedeemChange}
+                  onSubmit={this.redeem}
+                />
+              </Grid>
+            </Grid>
+          </Grid>
 
-            <TextField 
-              id="generate-input-field" 
-              variant="outlined"
-              type="number"
-              InputProps={{ inputProps: this.state.generate }}
-              onChange={this.handleGenerateChange}
-              disabled={this.state.generate.status !== util.NOTSTARTED}
-            />
-            <Button 
-              variant="contained" 
-              color="primary" 
-              onClick={this.generate} 
-              disabled={this.state.generate.cur === 0}
+          <Grid item xs={12}>
+            <Grid 
+              container 
+              className={rootStyle}
+              spacing={0}
+              alignItems="center" 
+              justify="center"
+              style={{ backgroundColor: util.WHITE, height: "576px" }}
             >
-              Generate
-              <ArrowUpward/>
-            </Button>
-            <TextField 
-              id="redeem-input-field" 
-              variant="outlined"
-              type="number"
-              InputProps={{ inputProps: this.state.redeem }}
-              onChange={this.handleRedeemChange}
-            />
-            <Button 
-              variant="outlined" 
-              color="secondary"
-              onClick={this.redeem}
-              disabled={this.state.redeem.cur === 0}
-            >
-              Redeem
-              <ArrowDownward/>
-            </Button>
-          </Card>
-
-          <Card>
-            <TokenBalance 
-              logo={usdcLogo} 
-              nativeDecimals={this.state.usdc.decimals} 
-              showDecimals={2} 
-              value={usdcBalance && usdcBalance.value}
-            />
-            <TokenBalance 
-              logo={tusdLogo} 
-              nativeDecimals={this.state.tusd.decimals} 
-              showDecimals={2} 
-              value={tusdBalance && tusdBalance.value}
-            />
-            <TokenBalance 
-              logo={paxLogo} 
-              nativeDecimals={this.state.pax.decimals} 
-              showDecimals={2} 
-              value={paxBalance && paxBalance.value}
-            />
-          </Card>
-
-          <Fab onClick={this.openHelp} style={{backgroundColor: "#E4F14D"}}>?</Fab>
-
-        </div>  
+              <Grid item xs={3}>             
+                <SmallTokenBalance 
+                  image={usdcLogo} 
+                  nativeDecimals={this.state.usdc.decimals} 
+                  showDecimals={2} 
+                  value={usdcBalance && usdcBalance.value}
+                  suffix="USDC"
+                />
+              </Grid>
+              <Grid item xs={3}>            
+                <SmallTokenBalance 
+                  image={tusdLogo} 
+                  nativeDecimals={this.state.tusd.decimals} 
+                  showDecimals={2} 
+                  value={tusdBalance && tusdBalance.value}
+                  suffix="TUSD"
+                />
+              </Grid>
+              <Grid item xs={3}>          
+                <SmallTokenBalance 
+                  image={paxLogo} 
+                  nativeDecimals={this.state.pax.decimals} 
+                  showDecimals={2} 
+                  value={paxBalance && paxBalance.value}
+                  suffix="PAX"
+                />
+              </Grid>
+            </Grid>
+            <Fab onClick={this.openHelp} style={{backgroundColor: "#E4F14D"}}>?</Fab>
+          </Grid>
+        </Grid>
       </div>
     );
 

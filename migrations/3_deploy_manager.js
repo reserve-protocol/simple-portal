@@ -19,13 +19,13 @@ module.exports = function(deployer, network, accounts) {
 
   // Stablecoins
   deployer.deploy(USDC, { from: OWNER }).then((instance) => {
-    instance.transfer(USER, web3.utils.toBN(501000000), { from: OWNER });
+    instance.transfer(USER, web3.utils.toBN(500000000), { from: OWNER });
   });
   deployer.deploy(TUSD, { from: OWNER }).then((instance) => {
-    instance.transfer(USER, web3.utils.toBN(502).mul(EIGHTEEN), { from: OWNER });
+    instance.transfer(USER, web3.utils.toBN(500).mul(EIGHTEEN), { from: OWNER });
   });
   deployer.deploy(PAX, { from: OWNER }).then((instance) => {
-    instance.transfer(USER, web3.utils.toBN(503).mul(EIGHTEEN), { from: OWNER });
+    instance.transfer(USER, web3.utils.toBN(500).mul(EIGHTEEN), { from: OWNER });
 
     // Basket
     return deployer.deploy(

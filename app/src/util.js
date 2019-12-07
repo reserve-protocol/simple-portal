@@ -5,6 +5,13 @@ export const ISSUING = "issuing";
 export const REDEEMING = "redeeming";
 export const DONE = "done";
 
+export const WHITE = "#FFFFFF";
+export const BLACK = "#0E0E0E";
+export const GREEN = "#4DF1A1";
+export const OFF_WHITE = "#F2F2F2";
+export const PURPLE = "#641CD0";
+export const GREY = "#5F5F5F";
+
 const BN = require('bn.js');
 const TEN = new BN(10)
 export const SIX = TEN.pow(new BN(6));
@@ -42,3 +49,9 @@ export function countOccurrences(arr, elem) {
   }
   return count;
 }
+
+export function formatNumber (nativeDecimals, showDecimals) {
+  return function(arg) {
+    return (arg / Math.pow(10, nativeDecimals)).toFixed(showDecimals);
+  }
+};

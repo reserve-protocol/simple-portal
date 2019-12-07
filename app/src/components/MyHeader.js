@@ -4,9 +4,8 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
 import reserveName from "../assets/reserve_name.png";
+import * as util from "../util.js";
 
-const black = "#252525";
-const green = "#4DF1A1";
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
@@ -19,7 +18,7 @@ const useStyles = makeStyles(theme => ({
     marginLeft: theme.spacing(6)
   },
   button: {
-    width: "75px",
+    width: "80px",
     height: "30px",
     position: "absolute",
     right: 0,
@@ -33,15 +32,15 @@ export default function ButtonAppBar(props) {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static" style={{backgroundColor: black}}>
+      <AppBar position="static" style={{backgroundColor: util.BLACK}}>
         <Toolbar>
           <img className={classes.image} src={reserveName} />
           <Button className={classes.button}
             variant={!props.initialized ? "contained" : "outlined"} 
             style={{
-              backgroundColor: !props.initialized ? green : black, 
-              color: !props.initialized ? black : green, 
-              fontSize: "8px" 
+              backgroundColor: !props.initialized ? util.GREEN : util.BLACK, 
+              color: !props.initialized ? util.BLACK : util.GREEN, 
+              fontSize: "9px" 
             }} 
             onClick={() => {
               if (!props.initialized) {

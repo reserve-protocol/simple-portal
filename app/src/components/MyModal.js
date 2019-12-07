@@ -1,19 +1,15 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-  Backdrop,
-  CircularProgress,
-  Fade,
-  Modal
-} from '@material-ui/core';
-import {
-  Check,
-  Close,
-  CloseRounded,
-  Pause
-} from "@material-ui/icons";
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Fade from '@material-ui/core/Fade';
+import Modal from '@material-ui/core/Modal';
+import Check from '@material-ui/icons/Check';
+import Close from '@material-ui/icons/Close';
+import CloseRounded from '@material-ui/icons/CloseRounded';
+import Pause from '@material-ui/icons/Pause';
 import { green } from '@material-ui/core/colors';
-
+import * as util from "../util.js";
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -33,6 +29,10 @@ const useStyles = makeStyles(theme => ({
 export default function MyModal(props) {
   const classes = useStyles();
   var texts = props.texts ? props.texts : [];
+  var image = <img src={props.image} width={200} height={200} alt="drizzle-logo" />;
+  if (!props.image) {
+    image = "";
+  }
 
   return (
     <div>
@@ -50,10 +50,10 @@ export default function MyModal(props) {
       >
         <Fade in={props.on}>
           <div className={classes.paper}>
-            <CloseRounded fontSize="small" style={{color: "#6B1CD1"}} onClick={props.onExited} />
+            <CloseRounded fontSize="small" style={{color: util.PURPLE}} onClick={props.onExited} />
             <h2 id="transition-modal-title" className="modal_title">{props.title}</h2>
             <p style={{textAlign: "center"}}>
-              <img src={props.image} width={200} height={200} alt="drizzle-logo" />
+              {image}
             </p>
             <p className="modal_text">
               <label>{props.text}</label>
