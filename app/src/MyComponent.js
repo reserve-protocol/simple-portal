@@ -302,7 +302,6 @@ export default class MyComponent extends Component {
             <BigTokenBalance
               image={bigRSVLogo} 
               nativeDecimals={this.state.rsv.decimals} 
-              showDecimals={2} 
               value={rsvBalance && rsvBalance.value}
               suffix="RSV"
             />
@@ -344,27 +343,30 @@ export default class MyComponent extends Component {
                 <SmallTokenBalance 
                   image={usdcLogo} 
                   nativeDecimals={this.state.usdc.decimals} 
-                  showDecimals={2} 
                   value={usdcBalance && usdcBalance.value}
                   suffix="USDC"
+                  width="120px"
+                  height="50px"
                 />
               </Grid>
               <Grid item xs={3}>            
                 <SmallTokenBalance 
                   image={tusdLogo} 
                   nativeDecimals={this.state.tusd.decimals} 
-                  showDecimals={2} 
                   value={tusdBalance && tusdBalance.value}
                   suffix="TUSD"
+                  width="50px"
+                  height="50px"
                 />
               </Grid>
               <Grid item xs={3}>          
                 <SmallTokenBalance 
                   image={paxLogo} 
                   nativeDecimals={this.state.pax.decimals} 
-                  showDecimals={2} 
                   value={paxBalance && paxBalance.value}
                   suffix="PAX"
+                  width="50px"
+                  height="50px"
                 />
               </Grid>
             </Grid>

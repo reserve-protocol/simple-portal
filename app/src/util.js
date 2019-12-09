@@ -11,6 +11,9 @@ export const GREEN = "#4DF1A1";
 export const OFF_WHITE = "#F2F2F2";
 export const PURPLE = "#641CD0";
 export const GREY = "#5F5F5F";
+export const LIGHT_GREY = "#C6C6C6";
+export const DARK_GREY = "#8F8F8F";
+export const LIGHT_BLACK = "#3A3A3A";
 
 const BN = require('bn.js');
 const TEN = new BN(10)
@@ -50,8 +53,18 @@ export function countOccurrences(arr, elem) {
   return count;
 }
 
-export function formatNumber (nativeDecimals, showDecimals) {
-  return function(arg) {
-    return (arg / Math.pow(10, nativeDecimals)).toFixed(showDecimals);
+export function formatNumber (nativeDecimals) {
+  return function(num) {
+    num = num / Math.pow(10, nativeDecimals);
+    if (num >= 1000000000) {
+       return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'G';
+    }
+    if (num >= 1000000) {
+       return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+    }
+    if (num >= 1000) {
+       return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+    }
+    return Math.round(num * 100) / 100;
   }
 };
