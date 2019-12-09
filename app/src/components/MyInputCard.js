@@ -3,6 +3,7 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
+import FloatAnchor from 'react-float-anchor';
 import { makeStyles } from '@material-ui/core/styles';
 import * as util from "../util.js";
 
@@ -28,22 +29,32 @@ export default function MyInputCard(props) {
 
   return (
     <Paper className={classes.root} >
-      <Grid container justifyContent="center" align="center" style={{ marginTop: "68px", marginLeft: "30px" }}>
+      <Grid container align="center" style={{ marginTop: "68px", marginLeft: "30px" }}>
         <Grid item xs={6} align="right">
-          <TextField className={classes.textField} style={{ height: inputHeight }}
-            variant="outlined"
-            type="number"
-            InputProps={{ style: { height: inputHeight }}}
-            onChange={props.onChange}
-          />
-          <label style={{ 
-            fontFamily: "Roboto", 
-            fontSize: "12px", 
-            color: util.GREY, 
-            marginLeft: "100px" 
-          }}>
-            {"Max " + props.max}
-          </label>
+          <FloatAnchor
+                            options={{ position: 'bottom', hAlign: "right" }}
+                            anchor={anchorRef => (
+                              <div ref={anchorRef}><TextField className={classes.textField} style={{ height: inputHeight }}
+                                      variant="outlined"
+                                      type="number"
+                                      InputProps={{ style: { height: inputHeight }}}
+                                      onChange={props.onChange}
+                                    /></div>
+                            )}
+                            float={
+                              <label style={{ 
+                                                              fontFamily: "Roboto", 
+                                                              fontSize: "12px", 
+                                                              color: util.GREY
+                                                            }}>
+                                                              {"Max " + props.max}
+                                                            </label>
+      
+                            }
+                          />
+
+
+
         </Grid>
         <Grid item xs={4} align="left" style={{ marginTop: "1px", marginLeft: "10px" }}>
           <Button 

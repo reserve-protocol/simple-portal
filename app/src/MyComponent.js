@@ -238,7 +238,7 @@ export default class MyComponent extends Component {
 
 
   render() {
-    const rootStyle = { flexGrow: 1 };
+    const rootStyle = "{ flexGrow: 1 }";
     var USDC, TUSD, PAX, Reserve, usdcBalance, tusdBalance, paxBalance, rsvBalance;
     if (this.props.initialized) {
       ({ USDC, TUSD, PAX, Reserve } = this.props.drizzleState.contracts);
