@@ -38,7 +38,7 @@ export function getRedeemableRSV(rsv) {
     return 0;
   }
 
-  return rsv.value;
+  return new BN(rsv.value).div(EIGHTEEN).toNumber();
 }
 
 
