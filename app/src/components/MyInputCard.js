@@ -32,29 +32,26 @@ export default function MyInputCard(props) {
       <Grid container align="center" style={{ marginTop: "68px", marginLeft: "30px" }}>
         <Grid item xs={6} align="right">
           <FloatAnchor
-                            options={{ position: 'bottom', hAlign: "right" }}
-                            anchor={anchorRef => (
-                              <div ref={anchorRef}><TextField className={classes.textField} style={{ height: inputHeight }}
-                                      variant="outlined"
-                                      type="number"
-                                      InputProps={{ style: { height: inputHeight }}}
-                                      onChange={props.onChange}
-                                    /></div>
-                            )}
-                            float={
-                              <label style={{ 
-                                                              fontFamily: "Roboto", 
-                                                              fontSize: "12px", 
-                                                              color: util.GREY
-                                                            }}>
-                                                              {"Max " + props.max}
-                                                            </label>
-      
-                            }
-                          />
-
-
-
+            options={{ position: 'bottom', hAlign: "right" }}
+            anchor={anchorRef => (
+              <div ref={anchorRef}><TextField className={classes.textField} style={{ height: inputHeight }}
+                variant="outlined"
+                type="number"
+                InputProps={{ style: { height: inputHeight }}}
+                onChange={props.onChange}
+              /></div>
+            )}
+            float={
+              <label style={{ 
+                fontFamily: "Roboto", 
+                fontSize: "12px", 
+                color: util.GREY,
+                marginRight: "15px"
+              }}>
+                {"Max " + props.max}
+              </label>
+            }
+          />
         </Grid>
         <Grid item xs={4} align="left" style={{ marginTop: "1px", marginLeft: "10px" }}>
           <Button 
