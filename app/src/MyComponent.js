@@ -21,6 +21,7 @@ import BigTokenBalance from "./components/BigTokenBalance.js";
 import MyModal from "./components/MyModal.js";
 import MyInputCard from "./components/MyInputCard.js";
 import MyHeader from "./components/MyHeader.js";
+import MyHelpButton from "./components/MyHelpButton.js";
 import * as util from "./util.js";
 
 
@@ -238,7 +239,7 @@ export default class MyComponent extends Component {
 
 
   render() {
-    const rootStyle = "{ flexGrow: 1 }";
+    const rootStyle = '{ flexGrow: 1 , height: "100%"}';
     var USDC, TUSD, PAX, Reserve, usdcBalance, tusdBalance, paxBalance, rsvBalance;
     if (this.props.initialized) {
       ({ USDC, TUSD, PAX, Reserve } = this.props.drizzleState.contracts);
@@ -297,7 +298,7 @@ export default class MyComponent extends Component {
 
         <Divider />
 
-        <Grid container className={rootStyle} spacing={0} direction="column">
+        <Grid container className={rootStyle} spacing={0} direction="column" justifyContent="flex-end">
           <Grid item xs={12} style={{ backgroundColor: util.BLACK }}>      
             <BigTokenBalance
               image={bigRSVLogo} 
@@ -337,7 +338,7 @@ export default class MyComponent extends Component {
               spacing={0}
               alignItems="center" 
               justify="center"
-              style={{ backgroundColor: util.WHITE, height: "576px" }}
+              style={{ backgroundColor: util.WHITE, paddingTop: "150px", paddingBottom: "150px" }}
             >
               <Grid item xs={3}>             
                 <SmallTokenBalance 
@@ -370,7 +371,12 @@ export default class MyComponent extends Component {
                 />
               </Grid>
             </Grid>
-            <Fab onClick={this.openHelp} style={{backgroundColor: "#E4F14D"}}>?</Fab>
+          </Grid>
+          <Grid item xs={12}>
+            <MyHelpButton openHelp={this.openHelp}/>
+          </Grid>
+          <Grid item xs={12} style={{ backgroundColor: util.BLACK, marginTop: "15px" }}>
+            <label style={{ paddingTop: "20px" }}>|</label>
           </Grid>
         </Grid>
       </div>
