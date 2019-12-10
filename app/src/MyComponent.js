@@ -276,6 +276,7 @@ export default class MyComponent extends Component {
           }}
         />
         <MyModal 
+          title="Generate RSV"
           texts={util.GENERATE_TEXT}
           txStatuses={this.getGenerateTxs()}
           on={this.state.generate.status !== util.NOTSTARTED}
@@ -285,6 +286,7 @@ export default class MyComponent extends Component {
           }}
         />
         <MyModal 
+          title="Redeem RSV"
           texts={util.REDEEM_TEXT}
           txStatuses={this.getRedeemTxs()}
           on={this.state.redeem.status !== util.NOTSTARTED}
