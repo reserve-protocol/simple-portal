@@ -44,7 +44,7 @@ export default function ButtonAppBar(props) {
     <div className={classes.root}>
       <AppBar position="static" style={{backgroundColor: util.BLACK}}>
         <Toolbar>
-          <img className={classes.image} src={reserveName} />
+          <a href="https://reserve.org"><img className={classes.image} alt="alt-text" src={reserveName} /></a>
           <Button className={classes.button}
             variant={!props.initialized ? "contained" : "text"} 
             style={{

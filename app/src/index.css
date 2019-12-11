@@ -34,6 +34,7 @@ code {
     line-height: 20px;
     /* or 133% */
     text-align: center;
+    max-width: 500px;
 
     color: #7C7979;
 }
@@ -43,7 +44,7 @@ code {
     font-style: normal;
     font-weight: normal;
     font-size: 15px;
-    line-height: 11px;
+    line-height: 40px;
     /* or 133% */
     text-align: left;
 

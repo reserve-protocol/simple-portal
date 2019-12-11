@@ -7,7 +7,7 @@ class SmallTokenBalance extends Component {
     return (
       <Grid container direction="column" justify="center" alignItems="center" >
         <Grid item xs={12}>
-          <img src={this.props.image} style={{width: this.props.width, height: this.props.height}}/>
+          <img src={this.props.image} alt="alt-text" style={{width: this.props.width, height: this.props.height}}/>
         </Grid>
         <Grid item xs={12} style={{ marginTop: "5px" }}>
           <label style={{ 

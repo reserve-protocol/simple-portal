@@ -1,5 +1,4 @@
-import React, { Component } from "react";
-import Grid from '@material-ui/core/Grid';
+import React from "react";
 import Fab from '@material-ui/core/Fab';
 import FloatAnchor from 'react-float-anchor';
 import * as util from "../util.js";

@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
-import AppBar from '@material-ui/core/AppBar';
-import Divider from '@material-ui/core/Divider';
-import Fab from '@material-ui/core/Fab';
 import Grid from '@material-ui/core/Grid';
 import ArrowUpward from '@material-ui/icons/ArrowUpward';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
-import { makeStyles } from '@material-ui/core/styles';
 import {merge} from 'lodash/fp';
 
 import metamaskLogo from "./assets/metamask.jpeg";
@@ -13,7 +9,6 @@ import bigRSVLogo from "./assets/reserve-logo.png";
 import usdcLogo from "./assets/usdc.png";
 import tusdLogo from "./assets/tusd.png";
 import paxLogo from "./assets/pax.png";
-import rsvLogo from "./assets/rsv.svg";
 import rsvCombineLogo from "./assets/rsv_combine.png";
 
 import SmallTokenBalance from "./components/SmallTokenBalance.js";
@@ -23,6 +18,7 @@ import MyInputCard from "./components/MyInputCard.js";
 import MyHeader from "./components/MyHeader.js";
 import MyHelpButton from "./components/MyHelpButton.js";
 import * as util from "./util.js";
+const BN = require('bn.js');
 
 
 export default class MyComponent extends Component {
@@ -31,10 +27,10 @@ export default class MyComponent extends Component {
     this.state = {
       generate: { min: 0, max: 0, cur: 0, status: util.NOTSTARTED },
       redeem: { min: 0, max: 0, cur: 0, status: util.NOTSTARTED },
-      usdc: { bal: null, approve: null, decimals: 6 },
-      tusd: { bal: null, approve: null, decimals: 18 },
-      pax: { bal: null, approve: null, decimals: 18 },
-      rsv: { bal: null, approve: null, generate: null, decimals: 18 },
+      usdc: { bal: null, allowance: null, approve: null, decimals: 6 },
+      tusd: { bal: null, allowance: null, approve: null, decimals: 18 },
+      pax: { bal: null, allowance: null, approve: null, decimals: 18 },
+      rsv: { bal: null, allowance: null, approve: null, generate: null, decimals: 18 },
       manager: { issue: null, redeem: null },
       showingHelp: false,
       hideConnectMetamask: false,
@@ -48,18 +44,23 @@ export default class MyComponent extends Component {
     const { drizzle, drizzleState } = this.props;
     console.log(drizzle);
     const account = drizzleState.accounts[0];
+    const managerAddress = drizzle.contracts.Manager.address;
     console.log("account ", account);
 
     // tell drizzle we always want to know the balances of these 4 tokens
-    const usdcKey = drizzle.contracts.USDC.methods["balanceOf"].cacheCall(account);
-    const tusdKey = drizzle.contracts.TUSD.methods["balanceOf"].cacheCall(account);
-    const paxKey = drizzle.contracts.PAX.methods["balanceOf"].cacheCall(account);
-    const rsvKey = drizzle.contracts.Reserve.methods["balanceOf"].cacheCall(account);
+    const usdcBal = drizzle.contracts.USDC.methods["balanceOf"].cacheCall(account);
+    const tusdBal = drizzle.contracts.TUSD.methods["balanceOf"].cacheCall(account);
+    const paxBal = drizzle.contracts.PAX.methods["balanceOf"].cacheCall(account);
+    const rsvBal = drizzle.contracts.Reserve.methods["balanceOf"].cacheCall(account);
+    const usdcAllowance = drizzle.contracts.USDC.methods["allowance"].cacheCall(account, managerAddress);
+    const tusdAllowance = drizzle.contracts.TUSD.methods["allowance"].cacheCall(account, managerAddress);
+    const paxAllowance = drizzle.contracts.PAX.methods["allowance"].cacheCall(account, managerAddress);
+    const rsvAllowance = drizzle.contracts.Reserve.methods["allowance"].cacheCall(account, managerAddress);
     const newState = merge(this.state, {
-      usdc: { bal: usdcKey }, 
-      tusd: { bal: tusdKey }, 
-      pax: { bal: paxKey },
-      rsv: { bal: rsvKey } 
+      usdc: { bal: usdcBal, allowance: usdcAllowance }, 
+      tusd: { bal: tusdBal, allowance: tusdAllowance }, 
+      pax: { bal: paxBal, allowance: paxAllowance },
+      rsv: { bal: rsvBal, allowance: rsvAllowance } 
     });
     this.setState(newState);
   }
@@ -138,18 +139,54 @@ export default class MyComponent extends Component {
 
   }
 
+  hasUSDCAllowance = () => {
+    if (!this.props.initialized) {
+      return;
+    }
+    const usdcAllowance = new BN(this.props.drizzleState.contracts.USDC.allowance[this.state.usdc.allowance] && this.props.drizzleState.contracts.USDC.allowance[this.state.usdc.allowance].value);
+    const usdcAmt = new BN(this.state.generate.cur).mul(new BN(333334));
+    return usdcAmt.lte(usdcAllowance);
+  }
+
+  hasTUSDAllowance = () => {
+    if (!this.props.initialized) {
+      return;
+    }
+    const tusdAllowance = new BN(this.props.drizzleState.contracts.TUSD.allowance[this.state.tusd.allowance] && this.props.drizzleState.contracts.TUSD.allowance[this.state.tusd.allowance].value);
+    const tusdAmt = new BN(this.state.generate.cur).mul(new BN(333333)).mul(util.TWELVE);
+    return tusdAmt.lte(tusdAllowance);
+  }
+
+  hasPAXAllowance = () => {
+    if (!this.props.initialized) {
+      return;
+    }
+    const paxAllowance = new BN(this.props.drizzleState.contracts.PAX.allowance[this.state.pax.allowance] && this.props.drizzleState.contracts.PAX.allowance[this.state.pax.allowance].value);
+    const paxAmt = new BN(this.state.generate.cur).mul(new BN(333333)).mul(util.TWELVE);
+    return paxAmt.lte(paxAllowance);
+  }
+
+  hasRSVAllowance = () => {
+    if (!this.props.initialized) {
+      return;
+    }
+    const rsvAllowance = new BN(this.props.drizzleState.contracts.Reserve.allowance[this.state.rsv.allowance] && this.props.drizzleState.contracts.Reserve.allowance[this.state.rsv.allowance].value);
+    const rsvAmt = new BN(this.state.generate.cur).mul(util.EIGHTEEN);
+    return rsvAmt.lte(rsvAllowance);
+  }
+
   getGenerateTxs = () => {
     return [
-      this.getTxStatus(this.state.usdc.approve), 
-      this.getTxStatus(this.state.tusd.approve), 
-      this.getTxStatus(this.state.pax.approve), 
+      this.hasUSDCAllowance() ? "success" : this.getTxStatus(this.state.usdc.approve), 
+      this.hasTUSDAllowance() ? "success" : this.getTxStatus(this.state.tusd.approve), 
+      this.hasPAXAllowance() ? "success" : this.getTxStatus(this.state.pax.approve), 
       this.getTxStatus(this.state.manager.issue)
     ];
   }
 
   getRedeemTxs = () => {
     return [
-      this.getTxStatus(this.state.rsv.approve), 
+      this.hasRSVAllowance() ? "success" : this.getTxStatus(this.state.rsv.approve), 
       this.getTxStatus(this.state.manager.redeem)
     ];
   }
@@ -186,25 +223,36 @@ export default class MyComponent extends Component {
     console.log(this.state.generate.cur);
     const { drizzle, drizzleState } = this.props;
     const managerAddress = drizzle.contracts.Manager.address;
-    const usdcAmt = drizzle.web3.utils.toBN(this.state.generate.cur).mul(drizzle.web3.utils.toBN(333334));
-    const tusdAmt = drizzle.web3.utils.toBN(this.state.generate.cur).mul(drizzle.web3.utils.toBN(333333)).mul(util.TWELVE);
-    const paxAmt = drizzle.web3.utils.toBN(this.state.generate.cur).mul(drizzle.web3.utils.toBN(333333)).mul(util.TWELVE);
+    var usdcApprove = this.state.usdc.approve;
+    var tusdApprove = this.state.tusd.approve; 
+    var paxApprove = this.state.pax.approve;
 
-    const usdcApprove = drizzle.contracts.USDC.methods.approve.cacheSend(
-      managerAddress, 
-      usdcAmt, 
-      { from: drizzleState.accounts[0], gas: 200000, to: drizzle.contracts.USDC.address }
-    );
-    const tusdApprove = drizzle.contracts.TUSD.methods.approve.cacheSend(
-      managerAddress, 
-      tusdAmt, 
-      { from: drizzleState.accounts[0], gas: 200000, to: drizzle.contracts.TUSD.address }
-    );
-    const paxApprove = drizzle.contracts.PAX.methods.approve.cacheSend(
-      managerAddress, 
-      paxAmt, 
-      { from: drizzleState.accounts[0], gas: 200000, to: drizzle.contracts.PAX.address }
-    );
+    const paxAmt = drizzle.web3.utils.toBN(this.state.generate.cur).mul(drizzle.web3.utils.toBN(333333)).mul(util.TWELVE);
+    if (!this.hasPAXAllowance()) {
+      paxApprove = drizzle.contracts.PAX.methods.approve.cacheSend(
+        managerAddress, 
+        paxAmt, 
+        { from: drizzleState.accounts[0], gas: 200000, to: drizzle.contracts.PAX.address }
+      );
+    }
+
+    const tusdAmt = drizzle.web3.utils.toBN(this.state.generate.cur).mul(drizzle.web3.utils.toBN(333333)).mul(util.TWELVE);
+    if (!this.hasTUSDAllowance()) {
+      tusdApprove = drizzle.contracts.TUSD.methods.approve.cacheSend(
+        managerAddress, 
+        tusdAmt, 
+        { from: drizzleState.accounts[0], gas: 200000, to: drizzle.contracts.TUSD.address }
+      );
+    }
+
+    const usdcAmt = drizzle.web3.utils.toBN(this.state.generate.cur).mul(drizzle.web3.utils.toBN(333334));
+    if (!this.hasUSDCAllowance()) {
+      usdcApprove = drizzle.contracts.USDC.methods.approve.cacheSend(
+        managerAddress, 
+        usdcAmt, 
+        { from: drizzleState.accounts[0], gas: 200000, to: drizzle.contracts.USDC.address }
+      );
+    }
 
     const newState = merge(this.state, { 
       generate: { status: util.APPROVING },
@@ -222,13 +270,16 @@ export default class MyComponent extends Component {
     console.log(this.state.redeem.cur);
     const { drizzle, drizzleState } = this.props;
     const managerAddress = drizzle.contracts.Manager.address;
-    const amt = drizzle.web3.utils.toBN(this.state.redeem.cur).mul(util.EIGHTEEN);
+    var rsvApprove = this.state.rsv.approve;
 
-    const rsvApprove = drizzle.contracts.Reserve.methods.approve.cacheSend(
-      managerAddress, 
-      amt, 
-      { from: drizzleState.accounts[0], gas: 200000, to: drizzle.contracts.Reserve.address }
-    );
+    const amt = drizzle.web3.utils.toBN(this.state.redeem.cur).mul(util.EIGHTEEN);
+    if (!this.hasRSVAllowance()) {
+      rsvApprove = drizzle.contracts.Reserve.methods.approve.cacheSend(
+        managerAddress, 
+        amt, 
+        { from: drizzleState.accounts[0], gas: 200000, to: drizzle.contracts.Reserve.address }
+      );
+    }
 
     const newState = merge(this.state, { 
       redeem: { status: util.APPROVING },
@@ -261,8 +312,6 @@ export default class MyComponent extends Component {
           title="Connect Metamask"
           image={metamaskLogo}
           text={util.METAMASK_TEXT}
-          width="450px"
-          height="350px"
           on={!this.props.initialized && !this.state.hideConnectMetamask}
           onExited={() => {
             this.setState({ hideConnectMetamask: true });
@@ -273,30 +322,24 @@ export default class MyComponent extends Component {
           image={rsvCombineLogo}
           text={util.HELP_TEXT}
           on={this.state.showingHelp}
-          width="500px"
-          height="350px"
           onExited={() => {
             this.setState({ showingHelp: false });
           }}
         />
         <MyModal 
-          title="Sign Transactions to Generate"
+          title="Sign Transactions"
           texts={util.GENERATE_TEXT}
           txStatuses={this.getGenerateTxs()}
           on={this.state.generate.status !== util.NOTSTARTED}
-          width="400px"
-          height="300px"
           onExited={() => {
             const newState = merge(this.state, { generate: { status: util.NOTSTARTED }});
             this.setState(newState);
           }}
         />
         <MyModal 
-          title="Sign Transactions To Redeem"
+          title="Signing Transactions"
           texts={util.REDEEM_TEXT}
           txStatuses={this.getRedeemTxs()}
-          width="400px"
-          height="250px"
           on={this.state.redeem.status !== util.NOTSTARTED}
           onExited={() => {
             const newState = merge(this.state, { redeem: { status: util.NOTSTARTED }});
