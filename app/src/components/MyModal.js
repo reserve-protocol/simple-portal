@@ -8,6 +8,7 @@ import Check from '@material-ui/icons/Check';
 import Close from '@material-ui/icons/Close';
 import CloseRounded from '@material-ui/icons/CloseRounded';
 import Pause from '@material-ui/icons/Pause';
+import loadingIcon from "../assets/reserve_loading.gif";
 import { green } from '@material-ui/core/colors';
 import { merge } from 'lodash/fp';
 import * as util from "../util.js";
@@ -51,7 +52,7 @@ export default function MyModal(props) {
     title = "";
   }
 
-  const iconStyling = { float: "right", paddingLeft: "150px", paddingRight: "40px" };
+  const iconStyling = { float: "right", paddingLeft: "150px", paddingRight: "40px", width: "40px", height: "40px" };
   const greenIconStyling = merge(iconStyling, { color: green[500] });
 
 
@@ -87,7 +88,7 @@ export default function MyModal(props) {
                     symbolHTML = <Check fontSize="large" style={greenIconStyling}/>;
                     break;
                   case "pending":
-                    symbolHTML = <CircularProgress style={iconStyling} />;
+                    symbolHTML = <img src={loadingIcon} style={iconStyling} />;
                     break;
                   case "failure":
                     symbolHTML = <Close fontSize="large" color="secondary" style={iconStyling} />;
