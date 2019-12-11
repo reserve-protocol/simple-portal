@@ -15,14 +15,15 @@ module.exports = function(deployer, network, accounts) {
   const OWNER = accounts[2];
   const ZERO = "0x0000000000000000000000000000000000000000";
   const THIRTY = web3.utils.toBN(10).pow(web3.utils.toBN(30));
+  const SIXTEEN = web3.utils.toBN(10).pow(web3.utils.toBN(16));
   const EIGHTEEN = web3.utils.toBN(10).pow(web3.utils.toBN(18));
 
   // Stablecoins
   deployer.deploy(USDC, { from: OWNER }).then((instance) => {
-    instance.transfer(USER, web3.utils.toBN(500000000), { from: OWNER });
+    instance.transfer(USER, web3.utils.toBN(500100000), { from: OWNER });
   });
   deployer.deploy(TUSD, { from: OWNER }).then((instance) => {
-    instance.transfer(USER, web3.utils.toBN(500).mul(EIGHTEEN), { from: OWNER });
+    instance.transfer(USER, web3.utils.toBN(50001).mul(SIXTEEN), { from: OWNER });
   });
   deployer.deploy(PAX, { from: OWNER }).then((instance) => {
     instance.transfer(USER, web3.utils.toBN(500).mul(EIGHTEEN), { from: OWNER });

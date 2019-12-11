@@ -261,6 +261,8 @@ export default class MyComponent extends Component {
           title="Connect Metamask"
           image={metamaskLogo}
           text={util.METAMASK_TEXT}
+          width="450px"
+          height="350px"
           on={!this.props.initialized && !this.state.hideConnectMetamask}
           onExited={() => {
             this.setState({ hideConnectMetamask: true });
@@ -271,24 +273,30 @@ export default class MyComponent extends Component {
           image={rsvCombineLogo}
           text={util.HELP_TEXT}
           on={this.state.showingHelp}
+          width="500px"
+          height="350px"
           onExited={() => {
             this.setState({ showingHelp: false });
           }}
         />
         <MyModal 
-          title="Generate RSV"
+          title="Sign Transactions to Generate"
           texts={util.GENERATE_TEXT}
           txStatuses={this.getGenerateTxs()}
           on={this.state.generate.status !== util.NOTSTARTED}
+          width="400px"
+          height="300px"
           onExited={() => {
             const newState = merge(this.state, { generate: { status: util.NOTSTARTED }});
             this.setState(newState);
           }}
         />
         <MyModal 
-          title="Redeem RSV"
+          title="Sign Transactions To Redeem"
           texts={util.REDEEM_TEXT}
           txStatuses={this.getRedeemTxs()}
+          width="400px"
+          height="250px"
           on={this.state.redeem.status !== util.NOTSTARTED}
           onExited={() => {
             const newState = merge(this.state, { redeem: { status: util.NOTSTARTED }});
@@ -298,9 +306,9 @@ export default class MyComponent extends Component {
 
         <MyHeader initialized={this.props.initialized} />
 
-        <Divider />
+        <Grid container style={{ backgroundColor: "#3F3F3F", height: "2px" }}/>
 
-        <Grid container className={rootStyle} spacing={0} direction="column" justifyContent="flex-end">
+        <Grid container className={rootStyle} spacing={0} direction="column">
           <Grid item xs={12} style={{ backgroundColor: util.BLACK }}>      
             <BigTokenBalance
               image={bigRSVLogo} 
@@ -314,8 +322,8 @@ export default class MyComponent extends Component {
             <Grid container className={rootStyle} spacing={0} alignItems="center" justify="center">      
               <Grid item xs={5}>
                 <MyInputCard
-                  text="Generate RSV  "
-                  arrow=<ArrowUpward fontSize="small" style={{ color: util.GREEN }}/>
+                  text="Generate RSV"
+                  arrow=<ArrowUpward style={{ color: util.GREEN, height: "20px", width: "14px" }}/>
                   max={this.state.generate.max}
                   onChange={this.handleGenerateChange}
                   onSubmit={this.generate}
@@ -323,8 +331,8 @@ export default class MyComponent extends Component {
               </Grid>
               <Grid item xs={5}>
                 <MyInputCard
-                  text="Redeem RSV  "
-                  arrow=<ArrowDownward fontSize="small" style={{ color: util.GREEN }}/>
+                  text="Redeem RSV"
+                  arrow=<ArrowDownward style={{ color: util.GREEN, height: "20px", width: "14px"  }}/>
                   max={this.state.redeem.max}
                   onChange={this.handleRedeemChange}
                   onSubmit={this.redeem}

@@ -26,7 +26,7 @@ code {
     color: #454545;
 }
 
-.modal_text {
+.modal_oneline_text {
     font-family: Roboto;
     font-style: normal;
     font-weight: normal;
@@ -34,6 +34,18 @@ code {
     line-height: 20px;
     /* or 133% */
     text-align: center;
+
+    color: #7C7979;
+}
+
+.modal_multiline_text {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 15px;
+    line-height: 11px;
+    /* or 133% */
+    text-align: left;
 
     color: #7C7979;
 }

@@ -6,7 +6,7 @@ export const REDEEMING = "redeeming";
 export const DONE = "done";
 
 export const WHITE = "#FFFFFF";
-export const BLACK = "#0E0E0E";
+export const BLACK = "#252525";
 export const GREEN = "#4DF1A1";
 export const OFF_WHITE = "#F2F2F2";
 export const PURPLE = "#641CD0";
@@ -55,16 +55,11 @@ export function countOccurrences(arr, elem) {
 
 export function formatNumber (nativeDecimals) {
   return function(num) {
+    if (!num) {
+      return 0;
+    }
+
     num = num / Math.pow(10, nativeDecimals);
-    if (num >= 1000000000) {
-       return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'G';
-    }
-    if (num >= 1000000) {
-       return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-    }
-    if (num >= 1000) {
-       return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
-    }
     return Math.round(num * 100) / 100;
   }
 };

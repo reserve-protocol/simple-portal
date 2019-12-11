@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const inputHeight = 36;
+const inputHeight = 39;
 
 export default function MyInputCard(props) {
   const classes = useStyles();
@@ -55,14 +55,25 @@ export default function MyInputCard(props) {
         </Grid>
         <Grid item xs={4} align="left" style={{ marginTop: "1px", marginLeft: "10px" }}>
           <Button 
-            variant="contained" 
+            variant="text" 
             size="large"
             onClick={props.onSubmit} 
-            style={{ backgroundColor: util.PURPLE }}
+            style={{ backgroundColor: util.PURPLE, padding: "7px 25px" }}
           >
-            <label style={{ fontFamily: "Roboto", color: util.WHITE, fontSize: "10px" }}>
+            <label style={{ 
+                fontFamily: "Roboto",
+                fontStyle: "normal",
+                fontWeight: "normal",
+                fontHeight: "12px",
+                textAlign: "center", 
+                color: util.WHITE, 
+                fontSize: "10px", 
+                textTransform: "capitalize" 
+              }}
+            >
             {props.text}
-            </label>
+            </label> 
+            &nbsp; 
             {props.arrow}
           </Button>
         </Grid>

@@ -14,15 +14,14 @@ import * as util from "../util.js";
 const useStyles = makeStyles(theme => ({
   modal: {
     display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: 'center'
   },
   paper: {
     borderRadius: "10px",
     backgroundColor: theme.palette.background.paper,
     border: '0px solid #000',
     boxShadow: theme.shadows[5],
-    padding: theme.spacing(3, 3, 3),
+    padding: theme.spacing(3, 6, 1),
   },
 }));
 
@@ -49,16 +48,16 @@ export default function MyModal(props) {
         }}
       >
         <Fade in={props.on}>
-          <div className={classes.paper}>
+          <div className={classes.paper} style={{ height: props.height, width: props.width }}>
             <CloseRounded fontSize="small" style={{color: util.PURPLE}} onClick={props.onExited} />
             <h2 id="transition-modal-title" className="modal_title">{props.title}</h2>
             <p style={{textAlign: "center"}}>
               {image}
             </p>
-            <p className="modal_text">
+            <p className="modal_oneline_text">
               <label>{props.text}</label>
             </p>
-            <ul>
+            <ol>
               {texts.map(function(text, index) {
                 var symbolHTML;
                 switch (props.txStatuses[index]) {
@@ -75,9 +74,9 @@ export default function MyModal(props) {
                     symbolHTML = <Pause fontSize="large" />;
 
                 }
-                return <li className="modal_text" key={ index }>{text}{symbolHTML}</li>;
+                return <li className="modal_multiline_text" key={ index }>{text}{symbolHTML}</li>;
               })}
-            </ul>
+            </ol>
           </div>
         </Fade>
       </Modal>
