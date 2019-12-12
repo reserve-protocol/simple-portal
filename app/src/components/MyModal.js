@@ -1,7 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Backdrop from '@material-ui/core/Backdrop';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Fade from '@material-ui/core/Fade';
 import Modal from '@material-ui/core/Modal';
 import Check from '@material-ui/icons/Check';
@@ -40,11 +39,6 @@ export default function MyModal(props) {
   />;
   if (!props.image) {
     image = "";
-  }
-
-  var link = <p className="whats_this_text"><label><a href={props.link}>Whats this?</a></label></p>;
-  if (!props.link) {
-    link = "";
   }
 
   var title = <h2 className="modal_title" style={{ paddingTop: "30px", paddingBottom: "20px" }} >{props.title}</h2>;
@@ -88,7 +82,7 @@ export default function MyModal(props) {
                     symbolHTML = <Check fontSize="large" style={greenIconStyling}/>;
                     break;
                   case "pending":
-                    symbolHTML = <img src={loadingIcon} style={iconStyling} />;
+                    symbolHTML = <img alt="alt-text" src={loadingIcon} style={iconStyling} />;
                     break;
                   case "failure":
                     symbolHTML = <Close fontSize="large" color="secondary" style={iconStyling} />;

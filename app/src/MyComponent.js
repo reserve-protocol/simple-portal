@@ -43,6 +43,7 @@ export default class MyComponent extends Component {
     }
     const { drizzle, drizzleState } = this.props;
     console.log(drizzle);
+    console.log(drizzleState);
     const account = drizzleState.accounts[0];
     const managerAddress = drizzle.contracts.Manager.address;
     console.log("account ", account);
@@ -56,6 +57,7 @@ export default class MyComponent extends Component {
     const tusdAllowance = drizzle.contracts.TUSD.methods["allowance"].cacheCall(account, managerAddress);
     const paxAllowance = drizzle.contracts.PAX.methods["allowance"].cacheCall(account, managerAddress);
     const rsvAllowance = drizzle.contracts.Reserve.methods["allowance"].cacheCall(account, managerAddress);
+
     const newState = merge(this.state, {
       usdc: { bal: usdcBal, allowance: usdcAllowance }, 
       tusd: { bal: tusdBal, allowance: tusdAllowance }, 
@@ -71,7 +73,8 @@ export default class MyComponent extends Component {
       return;
     }
     const { drizzle, drizzleState } = this.props;
-
+    console.log(drizzle);
+    console.log(drizzleState);
     // Vars to update.
     var issuableRSV;
     var redeemableRSV;
@@ -101,7 +104,7 @@ export default class MyComponent extends Component {
     if (generateSuccessCount === 3 && this.state.generate.status === util.APPROVING) {
       console.log("approving -> issuing");
       const amt = drizzle.web3.utils.toBN(this.state.generate.cur).mul(util.EIGHTEEN);
-      managerIssue = drizzle.contracts.Manager.methods.issue.cacheSend(amt, { from: drizzleState.accounts[0], gas: 1000000 });
+      managerIssue = drizzle.contracts.Manager.methods.issue.cacheSend(amt, { from: drizzleState.accounts[0], gas: 500000 });
       generateStatus = util.ISSUING;
     } else if (generateSuccessCount === 4 && this.state.generate.status === util.ISSUING) {
       console.log("issuing -> done");
@@ -113,7 +116,7 @@ export default class MyComponent extends Component {
     if (redeemSuccessCount === 1 && this.state.redeem.status === util.APPROVING) {
       console.log("approving -> redeeming");
       const amt = drizzle.web3.utils.toBN(this.state.redeem.cur).mul(util.EIGHTEEN);
-      managerRedeem = drizzle.contracts.Manager.methods.redeem.cacheSend(amt, { from: drizzleState.accounts[0], gas: 1000000 });
+      managerRedeem = drizzle.contracts.Manager.methods.redeem.cacheSend(amt, { from: drizzleState.accounts[0], gas: 300000 });
       redeemStatus = util.REDEEMING;
     } else if (redeemSuccessCount === 2 && this.state.redeem.status === util.REDEEMING) {
       console.log("redeem -> done");
@@ -232,7 +235,7 @@ export default class MyComponent extends Component {
       paxApprove = drizzle.contracts.PAX.methods.approve.cacheSend(
         managerAddress, 
         paxAmt, 
-        { from: drizzleState.accounts[0], gas: 200000, to: drizzle.contracts.PAX.address }
+        { from: drizzleState.accounts[0], gas: 80000, to: drizzle.contracts.PAX.address }
       );
     }
 
@@ -241,7 +244,7 @@ export default class MyComponent extends Component {
       tusdApprove = drizzle.contracts.TUSD.methods.approve.cacheSend(
         managerAddress, 
         tusdAmt, 
-        { from: drizzleState.accounts[0], gas: 200000, to: drizzle.contracts.TUSD.address }
+        { from: drizzleState.accounts[0], gas: 80000, to: drizzle.contracts.TUSD.address }
       );
     }
 
@@ -250,7 +253,7 @@ export default class MyComponent extends Component {
       usdcApprove = drizzle.contracts.USDC.methods.approve.cacheSend(
         managerAddress, 
         usdcAmt, 
-        { from: drizzleState.accounts[0], gas: 200000, to: drizzle.contracts.USDC.address }
+        { from: drizzleState.accounts[0], gas: 80000, to: drizzle.contracts.USDC.address }
       );
     }
 
@@ -277,7 +280,7 @@ export default class MyComponent extends Component {
       rsvApprove = drizzle.contracts.Reserve.methods.approve.cacheSend(
         managerAddress, 
         amt, 
-        { from: drizzleState.accounts[0], gas: 200000, to: drizzle.contracts.Reserve.address }
+        { from: drizzleState.accounts[0], gas: 80000, to: drizzle.contracts.Reserve.address }
       );
     }
 
@@ -290,7 +293,7 @@ export default class MyComponent extends Component {
 
 
   render() {
-    const rootStyle = '{ flexGrow: 1 , height: "100%"}';
+    const rootStyle = '{ flexGrow: 1, height: "100%" }';
     var USDC, TUSD, PAX, Reserve, usdcBalance, tusdBalance, paxBalance, rsvBalance;
     if (this.props.initialized) {
       ({ USDC, TUSD, PAX, Reserve } = this.props.drizzleState.contracts);
@@ -351,7 +354,7 @@ export default class MyComponent extends Component {
 
         <Grid container style={{ backgroundColor: "#3F3F3F", height: "2px" }}/>
 
-        <Grid container className={rootStyle} spacing={0} direction="column">
+        <Grid container className={rootStyle} spacing={0} direction="column" alignContent="stretch">
           <Grid item xs={12} style={{ backgroundColor: util.BLACK }}>      
             <BigTokenBalance
               image={bigRSVLogo} 
