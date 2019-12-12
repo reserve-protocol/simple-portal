@@ -1,0 +1,290 @@
+{
+  "contractName": "BasicOwnable",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "nominateNewOwner",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "declaration",
+          "type": "string"
+        }
+      ],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "nominatedOwner",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "acceptOwnership",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "nominee",
+          "type": "address"
+        }
+      ],
+      "name": "NewOwnerNominated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.5.7+commit.6da8b019\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":false,\"inputs\":[{\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"nominateNewOwner\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"declaration\",\"type\":\"string\"}],\"name\":\"renounceOwnership\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"nominatedOwner\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[],\"name\":\"acceptOwnership\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"nominee\",\"type\":\"address\"}],\"name\":\"NewOwnerNominated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"}],\"devdoc\":{\"methods\":{\"acceptOwnership()\":{\"details\":\"Accepts ownership of the contract.\"},\"nominateNewOwner(address)\":{\"details\":\"Nominates a new owner `newOwner`. Requires a follow-up `acceptOwnership`. Can only be called by the current owner.\"},\"nominatedOwner()\":{\"details\":\"Returns the address of the current nominated owner.\"},\"owner()\":{\"details\":\"Returns the address of the current owner.\"}}},\"userdoc\":{\"methods\":{\"renounceOwnership(string)\":{\"notice\":\"Set `_owner` to the 0 address. Only do this to deliberately lock in the current permissions.     * THIS CANNOT BE UNDONE! Call this only if you know what you're doing and why you're doing it!\"}},\"notice\":\"Simple Ownable contract for testing. \"}},\"settings\":{\"compilationTarget\":{\"/Users/taylorbrent/reserve/simple-portal/contracts/test/BasicOwnable.sol\":\"BasicOwnable\"},\"evmVersion\":\"constantinople\",\"libraries\":{},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/taylorbrent/reserve/simple-portal/contracts/ownership/Ownable.sol\":{\"keccak256\":\"0x2ed2e82733afbd0bf6aed84ea6d18900397e5cf33c5202efcbee0512ee5185e1\",\"urls\":[\"bzzr://48db9e89a8d17094a23a1f7ac7d82e190a96fc2ea62b8b3f0f91b7cb51781bc3\"]},\"/Users/taylorbrent/reserve/simple-portal/contracts/test/BasicOwnable.sol\":{\"keccak256\":\"0xe67136892c1c0901f651b23a034b5d6b43d7ae17e08035b431131469b09324af\",\"urls\":[\"bzzr://8bea36adbc7a2de3c5fc59c3d4c2a4fa7bf385a7ecd4fe195d33c1721acd2912\"]},\"/Users/taylorbrent/reserve/simple-portal/contracts/zeppelin/GSN/Context.sol\":{\"keccak256\":\"0xcdcfb6a3978745b5c00abba5098b918547fd461c5dc95123274fac8d22aa7c0d\",\"urls\":[\"bzzr://d030cffa7b744181ba20aedf961fa07a5f238e4bac03e08fcc84c3a59de3a35b\"]}},\"version\":1}",
+  "bytecode": "0x6080604052600061001461006360201b60201c565b600080546001600160a01b0319166001600160a01b0383169081178255604051929350917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0908290a350610067565b3390565b610513806100766000396000f3fe608060405234801561001057600080fd5b50600436106100575760003560e01c80631627540c1461005c5780634fdb7f441461008457806353a47bb7146100f457806379ba5097146101185780638da5cb5b14610120575b600080fd5b6100826004803603602081101561007257600080fd5b50356001600160a01b0316610128565b005b6100826004803603602081101561009a57600080fd5b8101906020810181356401000000008111156100b557600080fd5b8201836020820111156100c757600080fd5b803590602001918460018302840111640100000000831117156100e957600080fd5b5090925090506101e9565b6100fc61034e565b604080516001600160a01b039092168252519081900360200190f35b61008261035d565b6100fc61042b565b61013061043a565b6001600160a01b03811661018e5760408051600160e51b62461bcd02815260206004820152601660248201527f6e6577206f776e65722069732030206164647265737300000000000000000000604482015290519081900360640190fd5b600080546040516001600160a01b03808516939216917fb59bab42c554cfd49f4f001c983b6ed93ede25748b10114b7d1cb1b3c97df7af91a3600180546001600160a01b0319166001600160a01b0392909216919091179055565b6101f161043a565b60606040518060600160405280603581526020016104b3603591399050806040516020018082805190602001908083835b602083106102415780518252601f199092019160209182019101610222565b6001836020036101000a03801982511681845116808217855250505050505090500191505060405160208183030381529060405280519060200120838360405160200180838380828437808301925050509250505060405160208183030381529060405280519060200120146103015760408051600160e51b62461bcd02815260206004820152601560248201527f6465636c61726174696f6e20696e636f72726563740000000000000000000000604482015290519081900360640190fd5b600080546040516001600160a01b03909116907f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0908390a35050600080546001600160a01b031916905550565b6001546001600160a01b031690565b6103656104ae565b6001546001600160a01b039081169116146103ca5760408051600160e51b62461bcd02815260206004820152600c60248201527f756e617574686f72697a65640000000000000000000000000000000000000000604482015290519081900360640190fd5b600154600080546040516001600160a01b0393841693909116917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e091a3600154600080546001600160a01b0319166001600160a01b03909216919091179055565b6000546001600160a01b031690565b6000546001600160a01b031661044e6104ae565b6001600160a01b0316146104ac5760408051600160e51b62461bcd02815260206004820152601360248201527f63616c6c6572206973206e6f74206f776e657200000000000000000000000000604482015290519081900360640190fd5b565b339056fe49206865726562792072656e6f756e6365206f776e657273686970206f66207468697320636f6e747261637420666f72657665722ea165627a7a72305820a4ae0a5f01435412af203cd30cca58710257f691f99be6fe034178720e3362490029",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100575760003560e01c80631627540c1461005c5780634fdb7f441461008457806353a47bb7146100f457806379ba5097146101185780638da5cb5b14610120575b600080fd5b6100826004803603602081101561007257600080fd5b50356001600160a01b0316610128565b005b6100826004803603602081101561009a57600080fd5b8101906020810181356401000000008111156100b557600080fd5b8201836020820111156100c757600080fd5b803590602001918460018302840111640100000000831117156100e957600080fd5b5090925090506101e9565b6100fc61034e565b604080516001600160a01b039092168252519081900360200190f35b61008261035d565b6100fc61042b565b61013061043a565b6001600160a01b03811661018e5760408051600160e51b62461bcd02815260206004820152601660248201527f6e6577206f776e65722069732030206164647265737300000000000000000000604482015290519081900360640190fd5b600080546040516001600160a01b03808516939216917fb59bab42c554cfd49f4f001c983b6ed93ede25748b10114b7d1cb1b3c97df7af91a3600180546001600160a01b0319166001600160a01b0392909216919091179055565b6101f161043a565b60606040518060600160405280603581526020016104b3603591399050806040516020018082805190602001908083835b602083106102415780518252601f199092019160209182019101610222565b6001836020036101000a03801982511681845116808217855250505050505090500191505060405160208183030381529060405280519060200120838360405160200180838380828437808301925050509250505060405160208183030381529060405280519060200120146103015760408051600160e51b62461bcd02815260206004820152601560248201527f6465636c61726174696f6e20696e636f72726563740000000000000000000000604482015290519081900360640190fd5b600080546040516001600160a01b03909116907f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0908390a35050600080546001600160a01b031916905550565b6001546001600160a01b031690565b6103656104ae565b6001546001600160a01b039081169116146103ca5760408051600160e51b62461bcd02815260206004820152600c60248201527f756e617574686f72697a65640000000000000000000000000000000000000000604482015290519081900360640190fd5b600154600080546040516001600160a01b0393841693909116917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e091a3600154600080546001600160a01b0319166001600160a01b03909216919091179055565b6000546001600160a01b031690565b6000546001600160a01b031661044e6104ae565b6001600160a01b0316146104ac5760408051600160e51b62461bcd02815260206004820152601360248201527f63616c6c6572206973206e6f74206f776e657200000000000000000000000000604482015290519081900360640190fd5b565b339056fe49206865726562792072656e6f756e6365206f776e657273686970206f66207468697320636f6e747261637420666f72657665722ea165627a7a72305820a4ae0a5f01435412af203cd30cca58710257f691f99be6fe034178720e3362490029",
+  "sourceMap": "109:35:10:-;;;946:17:5;966:12;:10;;;:12;;:::i;:::-;988:6;:18;;-1:-1:-1;;;;;;988:18:5;-1:-1:-1;;;;;988:18:5;;;;;;;1021:43;;988:18;;-1:-1:-1;988:18:5;1021:43;;988:6;;1021:43;912:159;109:35:10;;787:96:18;866:10;787:96;:::o;109:35:10:-;;;;;;;",
+  "deployedSourceMap": "109:35:10:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;109:35:10;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1832:223:5;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;-1:-1;1832:223:5;-1:-1:-1;;;;;1832:223:5;;:::i;:::-;;2556:441;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;2556:441:5;;;;;;;;21:11:-1;5:28;;2:2;;;46:1;43;36:12;2:2;2556:441:5;;35:9:-1;28:4;12:14;8:25;5:40;2:2;;;58:1;55;48:12;2:2;2556:441:5;;;;;;100:9:-1;95:1;81:12;77:20;67:8;63:35;60:50;39:11;25:12;22:29;11:107;8:2;;;131:1;128;121:12;8:2;-1:-1;2556:441:5;;-1:-1:-1;2556:441:5;-1:-1:-1;2556:441:5;:::i;1310:97::-;;;:::i;:::-;;;;-1:-1:-1;;;;;1310:97:5;;;;;;;;;;;;;;2124:203;;;:::i;1147:77::-;;;:::i;1832:223::-;1526:12;:10;:12::i;:::-;-1:-1:-1;;;;;1913:22:5;;1905:57;;;;;-1:-1:-1;;;;;1905:57:5;;;;;;;;;;;;;;;;;;;;;;;;;;;;1995:6;;;1977:35;;-1:-1:-1;;;;;1977:35:5;;;;1995:6;;;1977:35;;;2022:15;:26;;-1:-1:-1;;;;;;2022:26:5;-1:-1:-1;;;;;2022:26:5;;;;;;;;;;1832:223::o;2556:441::-;1526:12;:10;:12::i;:::-;2641:33;:91;;;;;;;;;;;;;;;;;;;2846:19;2829:37;;;;;;;;;;;;;;;36:153:-1;66:2;61:3;58:11;36:153;;176:10;;164:23;;-1:-1;;139:12;;;;98:2;89:12;;;;114;36:153;;;274:1;267:3;263:2;259:12;254:3;250:22;246:30;315:4;311:9;305:3;299:10;295:26;356:4;350:3;344:10;340:21;389:7;380;377:20;372:3;365:33;3:399;;;2829:37:5;;;;;;;;;;;49:4:-1;39:7;30;26:21;22:32;13:7;6:49;2829:37:5;;;2819:48;;;;;;2790:11;;2773:29;;;;;;;30:3:-1;22:6;14;1:33;57:3;49:6;45:16;35:26;;2773:29:5;;;;;;;;49:4:-1;39:7;30;26:21;22:32;13:7;6:49;2773:29:5;;;2763:40;;;;;;:104;2742:163;;;;;-1:-1:-1;;;;;2742:163:5;;;;;;;;;;;;;;;;;;;;;;;;;;;;2958:1;2942:6;;2921:40;;-1:-1:-1;;;;;2942:6:5;;;;2921:40;;2958:1;;2921:40;-1:-1:-1;;2988:1:5;2971:19;;-1:-1:-1;;;;;;2971:19:5;;;-1:-1:-1;2556:441:5:o;1310:97::-;1385:15;;-1:-1:-1;;;;;1385:15:5;1310:97;:::o;2124:203::-;2197:12;:10;:12::i;:::-;2178:15;;-1:-1:-1;;;;;2178:15:5;;;:31;;;2170:56;;;;;-1:-1:-1;;;;;2170:56:5;;;;;;;;;;;;;;;;;;;;;;;;;;;;2270:15;;;2262:6;;2241:45;;-1:-1:-1;;;;;2270:15:5;;;;2262:6;;;;2241:45;;;2305:15;;;2296:24;;-1:-1:-1;;;;;;2296:24:5;-1:-1:-1;;;;;2305:15:5;;;2296:24;;;;;;2124:203::o;1147:77::-;1185:7;1211:6;-1:-1:-1;;;;;1211:6:5;1147:77;:::o;1562:107::-;1632:6;;-1:-1:-1;;;;;1632:6:5;1616:12;:10;:12::i;:::-;-1:-1:-1;;;;;1616:22:5;;1608:54;;;;;-1:-1:-1;;;;;1608:54:5;;;;;;;;;;;;;;;;;;;;;;;;;;;;1562:107::o;787:96:18:-;866:10;787:96;:::o",
+  "source": "pragma solidity 0.5.7;\n\nimport \"../ownership/Ownable.sol\";\n\n/**\n * Simple Ownable contract for testing. \n */\ncontract BasicOwnable is Ownable {}\n",
+  "sourcePath": "/Users/taylorbrent/reserve/simple-portal/contracts/test/BasicOwnable.sol",
+  "ast": {
+    "absolutePath": "/Users/taylorbrent/reserve/simple-portal/contracts/test/BasicOwnable.sol",
+    "exportedSymbols": {
+      "BasicOwnable": [
+        3344
+      ]
+    },
+    "id": 3345,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 3340,
+        "literals": [
+          "solidity",
+          "0.5",
+          ".7"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:22:10"
+      },
+      {
+        "absolutePath": "/Users/taylorbrent/reserve/simple-portal/contracts/ownership/Ownable.sol",
+        "file": "../ownership/Ownable.sol",
+        "id": 3341,
+        "nodeType": "ImportDirective",
+        "scope": 3345,
+        "sourceUnit": 2308,
+        "src": "24:34:10",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 3342,
+              "name": "Ownable",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 2307,
+              "src": "134:7:10",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_Ownable_$2307",
+                "typeString": "contract Ownable"
+              }
+            },
+            "id": 3343,
+            "nodeType": "InheritanceSpecifier",
+            "src": "134:7:10"
+          }
+        ],
+        "contractDependencies": [
+          2307,
+          3685
+        ],
+        "contractKind": "contract",
+        "documentation": "Simple Ownable contract for testing. ",
+        "fullyImplemented": true,
+        "id": 3344,
+        "linearizedBaseContracts": [
+          3344,
+          2307,
+          3685
+        ],
+        "name": "BasicOwnable",
+        "nodeType": "ContractDefinition",
+        "nodes": [],
+        "scope": 3345,
+        "src": "109:35:10"
+      }
+    ],
+    "src": "0:145:10"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/taylorbrent/reserve/simple-portal/contracts/test/BasicOwnable.sol",
+    "exportedSymbols": {
+      "BasicOwnable": [
+        3344
+      ]
+    },
+    "id": 3345,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 3340,
+        "literals": [
+          "solidity",
+          "0.5",
+          ".7"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:22:10"
+      },
+      {
+        "absolutePath": "/Users/taylorbrent/reserve/simple-portal/contracts/ownership/Ownable.sol",
+        "file": "../ownership/Ownable.sol",
+        "id": 3341,
+        "nodeType": "ImportDirective",
+        "scope": 3345,
+        "sourceUnit": 2308,
+        "src": "24:34:10",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 3342,
+              "name": "Ownable",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 2307,
+              "src": "134:7:10",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_Ownable_$2307",
+                "typeString": "contract Ownable"
+              }
+            },
+            "id": 3343,
+            "nodeType": "InheritanceSpecifier",
+            "src": "134:7:10"
+          }
+        ],
+        "contractDependencies": [
+          2307,
+          3685
+        ],
+        "contractKind": "contract",
+        "documentation": "Simple Ownable contract for testing. ",
+        "fullyImplemented": true,
+        "id": 3344,
+        "linearizedBaseContracts": [
+          3344,
+          2307,
+          3685
+        ],
+        "name": "BasicOwnable",
+        "nodeType": "ContractDefinition",
+        "nodes": [],
+        "scope": 3345,
+        "src": "109:35:10"
+      }
+    ],
+    "src": "0:145:10"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.5.7+commit.6da8b019.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.0.17",
+  "updatedAt": "2019-12-12T00:07:39.152Z",
+  "devdoc": {
+    "methods": {
+      "acceptOwnership()": {
+        "details": "Accepts ownership of the contract."
+      },
+      "nominateNewOwner(address)": {
+        "details": "Nominates a new owner `newOwner`. Requires a follow-up `acceptOwnership`. Can only be called by the current owner."
+      },
+      "nominatedOwner()": {
+        "details": "Returns the address of the current nominated owner."
+      },
+      "owner()": {
+        "details": "Returns the address of the current owner."
+      }
+    }
+  },
+  "userdoc": {
+    "methods": {
+      "renounceOwnership(string)": {
+        "notice": "Set `_owner` to the 0 address. Only do this to deliberately lock in the current permissions.     * THIS CANNOT BE UNDONE! Call this only if you know what you're doing and why you're doing it!"
+      }
+    },
+    "notice": "Simple Ownable contract for testing. "
+  }
+}
