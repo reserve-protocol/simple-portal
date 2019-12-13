@@ -11,7 +11,7 @@ module.exports = {
       network_id: "*",
       gasPrice:   0x1,
       gas:        0x1fffffffffffff
-    }
+    },
   },
   compilers: {
     solc: {

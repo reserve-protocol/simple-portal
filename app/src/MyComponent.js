@@ -18,7 +18,9 @@ import MyInputCard from "./components/MyInputCard.js";
 import MyHeader from "./components/MyHeader.js";
 import MyHelpButton from "./components/MyHelpButton.js";
 import * as util from "./util.js";
+
 const BN = require('bn.js');
+const DEV = false;
 
 
 export default class MyComponent extends Component {
@@ -72,9 +74,10 @@ export default class MyComponent extends Component {
       this.componentDidMount();
       return;
     }
+    if (!this.appOn()) {
+      return;
+    }
     const { drizzle, drizzleState } = this.props;
-    console.log(drizzle);
-    console.log(drizzleState);
     // Vars to update.
     var issuableRSV;
     var redeemableRSV;
@@ -140,6 +143,10 @@ export default class MyComponent extends Component {
       this.setState(newState);
     }
 
+  }
+
+  appOn = () => { 
+    return DEV || (this.props.drizzle.web3.givenProvider && this.props.drizzle.web3.givenProvider.networkVersion === "1");
   }
 
   hasUSDCAllowance = () => {
@@ -223,6 +230,9 @@ export default class MyComponent extends Component {
     if (!this.props.initialized) {
       return;
     }
+    if (!this.appOn()) {
+      return;
+    }
     console.log(this.state.generate.cur);
     const { drizzle, drizzleState } = this.props;
     const managerAddress = drizzle.contracts.Manager.address;
@@ -270,6 +280,9 @@ export default class MyComponent extends Component {
     if (!this.props.initialized) {
       return;
     }
+    if (!this.appOn()) {
+      return;
+    }
     console.log(this.state.redeem.cur);
     const { drizzle, drizzleState } = this.props;
     const managerAddress = drizzle.contracts.Manager.address;
@@ -302,7 +315,7 @@ export default class MyComponent extends Component {
       paxBalance = PAX.balanceOf[this.state.pax.bal];
       rsvBalance = Reserve.balanceOf[this.state.rsv.bal];
     }
-    if (!usdcBalance || !tusdBalance || !paxBalance || !rsvBalance) {
+    if (!this.appOn() || !usdcBalance || !tusdBalance || !paxBalance || !rsvBalance) {
       usdcBalance = 0;
       tusdBalance = 0;
       paxBalance = 0;
@@ -315,7 +328,7 @@ export default class MyComponent extends Component {
           title="Connect Metamask"
           image={metamaskLogo}
           text={util.METAMASK_TEXT}
-          on={!this.props.initialized && !this.state.hideConnectMetamask}
+          on={(!this.appOn() || !this.props.initialized) && !this.state.hideConnectMetamask}
           onExited={() => {
             this.setState({ hideConnectMetamask: true });
           }}
@@ -350,7 +363,7 @@ export default class MyComponent extends Component {
           }}
         />
 
-        <MyHeader initialized={this.props.initialized} />
+        <MyHeader initialized={this.appOn() && this.props.initialized} />
 
         <Grid container style={{ backgroundColor: "#3F3F3F", height: "2px" }}/>
 
