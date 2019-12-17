@@ -22,6 +22,12 @@ import * as util from "./util.js";
 const BN = require('bn.js');
 const DEV = false;
 
+function log(s) {
+  if (DEV) {
+    console.log(s);
+  }
+}
+
 
 export default class MyComponent extends Component {
   constructor(props) {
@@ -44,11 +50,11 @@ export default class MyComponent extends Component {
       return;
     }
     const { drizzle, drizzleState } = this.props;
-    console.log(drizzle);
-    console.log(drizzleState);
+    log(drizzle);
+    log(drizzleState);
     const account = drizzleState.accounts[0];
     const managerAddress = drizzle.contracts.Manager.address;
-    console.log("account ", account);
+    log("account ", account);
 
     // tell drizzle we always want to know the balances of these 4 tokens
     const usdcBal = drizzle.contracts.USDC.methods["balanceOf"].cacheCall(account);
@@ -78,6 +84,8 @@ export default class MyComponent extends Component {
       return;
     }
     const { drizzle, drizzleState } = this.props;
+    // log(drizzle);
+    // log(drizzleState);
     // Vars to update.
     var issuableRSV;
     var redeemableRSV;
@@ -85,6 +93,7 @@ export default class MyComponent extends Component {
     var redeemStatus = this.state.redeem.status;
     var managerIssue = this.state.manager.issue;
     var managerRedeem = this.state.manager.redeem;
+    const managerAddress = drizzle.contracts.Manager.address;
 
     // State transitions for max issuable count.
     const lastIssuableRSV = util.getIssuableRSV(
@@ -105,24 +114,29 @@ export default class MyComponent extends Component {
     // State transitions for generate flow.
     const generateSuccessCount = util.countOccurrences(this.getGenerateTxs(), "success");
     if (generateSuccessCount === 3 && this.state.generate.status === util.APPROVING) {
-      console.log("approving -> issuing");
+      log("approving -> issuing");
       const amt = drizzle.web3.utils.toBN(this.state.generate.cur).mul(util.EIGHTEEN);
-      managerIssue = drizzle.contracts.Manager.methods.issue.cacheSend(amt, { from: drizzleState.accounts[0], gas: 500000 });
+      const issueOptions = { from: drizzleState.accounts[0], gas: 500000, gasLimit: 500000, to: managerAddress };
+      log(issueOptions);
+      managerIssue = drizzle.contracts.Manager.methods.issue.cacheSend(amt, issueOptions);
       generateStatus = util.ISSUING;
     } else if (generateSuccessCount === 4 && this.state.generate.status === util.ISSUING) {
-      console.log("issuing -> done");
+      log("issuing -> done");
       generateStatus = util.DONE;
     }
 
     // State transitions for redeem flow.
     const redeemSuccessCount = util.countOccurrences(this.getRedeemTxs(), "success");
     if (redeemSuccessCount === 1 && this.state.redeem.status === util.APPROVING) {
-      console.log("approving -> redeeming");
+      log("approving -> redeeming");
       const amt = drizzle.web3.utils.toBN(this.state.redeem.cur).mul(util.EIGHTEEN);
-      managerRedeem = drizzle.contracts.Manager.methods.redeem.cacheSend(amt, { from: drizzleState.accounts[0], gas: 300000 });
+      const redeemOptions = { from: drizzleState.accounts[0], gas: 500000, gasLimit: 500000, to: managerAddress };
+      log(redeemOptions);
+      log(amt.toString());
+      managerRedeem = drizzle.contracts.Manager.methods.redeem.cacheSend(amt, redeemOptions);
       redeemStatus = util.REDEEMING;
     } else if (redeemSuccessCount === 2 && this.state.redeem.status === util.REDEEMING) {
-      console.log("redeem -> done");
+      log("redeem -> done");
       redeemStatus = util.DONE;
     }
 
@@ -181,22 +195,36 @@ export default class MyComponent extends Component {
       return;
     }
     const rsvAllowance = new BN(this.props.drizzleState.contracts.Reserve.allowance[this.state.rsv.allowance] && this.props.drizzleState.contracts.Reserve.allowance[this.state.rsv.allowance].value);
-    const rsvAmt = new BN(this.state.generate.cur).mul(util.EIGHTEEN);
+    const rsvAmt = new BN(this.state.redeem.cur).mul(util.EIGHTEEN);
     return rsvAmt.lte(rsvAllowance);
   }
 
   getGenerateTxs = () => {
+    var usdcStatus, tusdStatus, paxStatus;
+    if (this.getTxStatus(this.state.usdc.approve) !== "success") {
+      usdcStatus = this.getTxStatus(this.state.usdc.approve);
+    }
+    if (this.getTxStatus(this.state.tusd.approve) !== "success") {
+      tusdStatus = this.getTxStatus(this.state.tusd.approve);
+    }
+    if (this.getTxStatus(this.state.pax.approve) !== "success") {
+      paxStatus = this.getTxStatus(this.state.pax.approve);
+    }
     return [
-      this.hasUSDCAllowance() ? "success" : this.getTxStatus(this.state.usdc.approve), 
-      this.hasTUSDAllowance() ? "success" : this.getTxStatus(this.state.tusd.approve), 
-      this.hasPAXAllowance() ? "success" : this.getTxStatus(this.state.pax.approve), 
+      this.hasUSDCAllowance() ? "success" : usdcStatus, 
+      this.hasTUSDAllowance() ? "success" : tusdStatus, 
+      this.hasPAXAllowance() ? "success" : paxStatus, 
       this.getTxStatus(this.state.manager.issue)
     ];
   }
 
   getRedeemTxs = () => {
+    var rsvStatus;
+    if (this.getTxStatus(this.state.rsv.approve) !== "success") {
+      rsvStatus = this.getTxStatus(this.state.rsv.approve);
+    }
     return [
-      this.hasRSVAllowance() ? "success" : this.getTxStatus(this.state.rsv.approve), 
+      this.hasRSVAllowance() ? "success" : rsvStatus, 
       this.getTxStatus(this.state.manager.redeem)
     ];
   }
@@ -233,37 +261,49 @@ export default class MyComponent extends Component {
     if (!this.appOn()) {
       return;
     }
-    console.log(this.state.generate.cur);
+    log(this.state.generate.cur);
     const { drizzle, drizzleState } = this.props;
     const managerAddress = drizzle.contracts.Manager.address;
+    log(managerAddress)
     var usdcApprove = this.state.usdc.approve;
     var tusdApprove = this.state.tusd.approve; 
     var paxApprove = this.state.pax.approve;
 
-    const paxAmt = drizzle.web3.utils.toBN(this.state.generate.cur).mul(drizzle.web3.utils.toBN(333333)).mul(util.TWELVE);
-    if (!this.hasPAXAllowance()) {
-      paxApprove = drizzle.contracts.PAX.methods.approve.cacheSend(
+    log("network version");
+
+    // log(drizzle.web3.givenProvider.networkVersion);
+
+    const usdcAmt = drizzle.web3.utils.toBN(this.state.generate.cur).mul(drizzle.web3.utils.toBN(333334));
+    if (!this.hasUSDCAllowance()) {
+      log("hi");
+      const usdcOptions = { from: drizzleState.accounts[0], gas: 80000, gasLimit: 80000, to: drizzle.contracts.USDC.address };
+      log(usdcOptions);
+      usdcApprove = drizzle.contracts.USDC.methods.approve.cacheSend(
         managerAddress, 
-        paxAmt, 
-        { from: drizzleState.accounts[0], gas: 80000, to: drizzle.contracts.PAX.address }
+        usdcAmt, 
+        usdcOptions
       );
     }
 
     const tusdAmt = drizzle.web3.utils.toBN(this.state.generate.cur).mul(drizzle.web3.utils.toBN(333333)).mul(util.TWELVE);
     if (!this.hasTUSDAllowance()) {
+      const tusdOptions = { from: drizzleState.accounts[0], gas: 80000, gasLimit: 80000, to: drizzle.contracts.TUSD.address };
+      log(tusdOptions);
       tusdApprove = drizzle.contracts.TUSD.methods.approve.cacheSend(
         managerAddress, 
         tusdAmt, 
-        { from: drizzleState.accounts[0], gas: 80000, to: drizzle.contracts.TUSD.address }
+        tusdOptions
       );
     }
 
-    const usdcAmt = drizzle.web3.utils.toBN(this.state.generate.cur).mul(drizzle.web3.utils.toBN(333334));
-    if (!this.hasUSDCAllowance()) {
-      usdcApprove = drizzle.contracts.USDC.methods.approve.cacheSend(
+    const paxAmt = drizzle.web3.utils.toBN(this.state.generate.cur).mul(drizzle.web3.utils.toBN(333333)).mul(util.TWELVE);
+    if (!this.hasPAXAllowance()) {
+      const paxOptions = { from: drizzleState.accounts[0], gas: 80000, gasLimit: 80000, to: drizzle.contracts.PAX.address };
+      log(paxOptions);
+      paxApprove = drizzle.contracts.PAX.methods.approve.cacheSend(
         managerAddress, 
-        usdcAmt, 
-        { from: drizzleState.accounts[0], gas: 80000, to: drizzle.contracts.USDC.address }
+        paxAmt, 
+        paxOptions
       );
     }
 
@@ -283,17 +323,19 @@ export default class MyComponent extends Component {
     if (!this.appOn()) {
       return;
     }
-    console.log(this.state.redeem.cur);
+    log(this.state.redeem.cur);
     const { drizzle, drizzleState } = this.props;
     const managerAddress = drizzle.contracts.Manager.address;
     var rsvApprove = this.state.rsv.approve;
 
     const amt = drizzle.web3.utils.toBN(this.state.redeem.cur).mul(util.EIGHTEEN);
     if (!this.hasRSVAllowance()) {
+      const rsvOptions = { from: drizzleState.accounts[0], gas: 80000, gasLimit: 80000, to: drizzle.contracts.Reserve.address };
+      log(rsvOptions);
       rsvApprove = drizzle.contracts.Reserve.methods.approve.cacheSend(
         managerAddress, 
         amt, 
-        { from: drizzleState.accounts[0], gas: 80000, to: drizzle.contracts.Reserve.address }
+        rsvOptions
       );
     }
 

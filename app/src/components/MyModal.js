@@ -84,7 +84,7 @@ export default function MyModal(props) {
                   case "pending":
                     symbolHTML = <img alt="alt-text" src={loadingIcon} style={iconStyling} />;
                     break;
-                  case "failure":
+                  case "error" || "failure":
                     symbolHTML = <Close fontSize="large" color="secondary" style={iconStyling} />;
                     break;
                   default:

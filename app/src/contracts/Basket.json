@@ -4611,12 +4611,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x7C2D5a42C72642A99136f5Ef24E1aa48e260F526",
-      "transactionHash": "0xd35db74411ad7067a6ec8f8e6cd08ee1bc60e3081d0459208fa5ae6ee473b582"
+      "address": "0x7BDb0A8740816F6e9C983Ca4469705C38C0F9aeF",
+      "transactionHash": "0xfc7e55c8cf7b393253b7aaf262492993f2aa4ed7269814e37b2d254e6cf22403"
     }
   },
   "schemaVersion": "3.0.17",
-  "updatedAt": "2019-12-12T02:12:42.265Z",
+  "updatedAt": "2019-12-17T01:34:26.210Z",
   "networkType": "ethereum",
   "devdoc": {
     "details": "Each `weights` value is an integer, with unit aqToken/RSV. (That is, atto-quantum-Tokens per RSV). If you prefer, you can think about this as if the weights value is itself an 18-decimal fixed-point value with unit qToken/RSV. (It would be prettier if these were just straightforwardly qTokens/RSV, but that introduces unacceptable rounding error in some of our basket computations.)For example, let's say we have the token USDX in the vault, and it's represented to 6 decimal places, and the RSV basket should include 3/10ths of a USDX for each RSV. Then the corresponding basket weight will be represented as 3*(10**23), because:3*(10**23) aqToken/RSV == 0.3 Token/RSV * (10**6 qToken/Token) * (10**18 aqToken/qToken)For further notes on units, see the header comment for Manager.sol.",

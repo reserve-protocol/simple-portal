@@ -26,7 +26,7 @@ export const METAMASK_TEXT = "The Metamask extension is required to generate or 
 export const HELP_TEXT = "RSV is a decentralized stablecoin collateralized by USDC, TUSD, and PAX that can be generated and redeemed by anyone, anytime. ";
 
 export function getIssuableRSV(usdc, tusd, pax) {
-  if (!usdc || !tusd || !pax) { 
+  if (!usdc || !tusd || !pax || !usdc.value || !tusd.value || !pax.value) { 
     return 0; 
   }
   const usdcBN = new BN(usdc.value);
@@ -37,7 +37,7 @@ export function getIssuableRSV(usdc, tusd, pax) {
 };
 
 export function getRedeemableRSV(rsv) {
-  if (!rsv) {
+  if (!rsv || !rsv.value) {
     return 0;
   }
 
