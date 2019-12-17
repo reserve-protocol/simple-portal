@@ -84,8 +84,8 @@ export default class MyComponent extends Component {
       return;
     }
     const { drizzle, drizzleState } = this.props;
-    // log(drizzle);
-    // log(drizzleState);
+    log(drizzle);
+    log(drizzleState);
     // Vars to update.
     var issuableRSV;
     var redeemableRSV;
@@ -200,31 +200,17 @@ export default class MyComponent extends Component {
   }
 
   getGenerateTxs = () => {
-    var usdcStatus, tusdStatus, paxStatus;
-    if (this.getTxStatus(this.state.usdc.approve) !== "success") {
-      usdcStatus = this.getTxStatus(this.state.usdc.approve);
-    }
-    if (this.getTxStatus(this.state.tusd.approve) !== "success") {
-      tusdStatus = this.getTxStatus(this.state.tusd.approve);
-    }
-    if (this.getTxStatus(this.state.pax.approve) !== "success") {
-      paxStatus = this.getTxStatus(this.state.pax.approve);
-    }
     return [
-      this.hasUSDCAllowance() ? "success" : usdcStatus, 
-      this.hasTUSDAllowance() ? "success" : tusdStatus, 
-      this.hasPAXAllowance() ? "success" : paxStatus, 
+      this.hasUSDCAllowance() ? "success" : this.getTxStatus(this.state.usdc.approve), 
+      this.hasTUSDAllowance() ? "success" : this.getTxStatus(this.state.tusd.approve), 
+      this.hasPAXAllowance() ? "success" : this.getTxStatus(this.state.pax.approve), 
       this.getTxStatus(this.state.manager.issue)
     ];
   }
 
   getRedeemTxs = () => {
-    var rsvStatus;
-    if (this.getTxStatus(this.state.rsv.approve) !== "success") {
-      rsvStatus = this.getTxStatus(this.state.rsv.approve);
-    }
     return [
-      this.hasRSVAllowance() ? "success" : rsvStatus, 
+      this.hasRSVAllowance() ? "success" : this.getTxStatus(this.state.rsv.approve), 
       this.getTxStatus(this.state.manager.redeem)
     ];
   }
@@ -234,7 +220,7 @@ export default class MyComponent extends Component {
       return;
     }
     const txHash = this.props.drizzleState.transactionStack[txId];
-    const txStatus = this.props.drizzleState.transactions[txHash]
+    const txStatus = this.props.drizzleState.transactions[txHash];
     if (txStatus) {
       return txStatus.status;
     }
@@ -311,7 +297,8 @@ export default class MyComponent extends Component {
       generate: { status: util.APPROVING },
       usdc: { approve: usdcApprove },  
       tusd: { approve: tusdApprove },  
-      pax: { approve: paxApprove }
+      pax: { approve: paxApprove },
+      manager: { issue: null },
     });
     this.setState(newState);
   }
@@ -341,7 +328,8 @@ export default class MyComponent extends Component {
 
     const newState = merge(this.state, { 
       redeem: { status: util.APPROVING },
-      rsv: { approve: rsvApprove }  
+      rsv: { approve: rsvApprove },
+      manager: { redeem: null },
     });
     this.setState(newState);
   }
