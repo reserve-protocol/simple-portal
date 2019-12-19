@@ -33,7 +33,7 @@ export function getIssuableRSV(usdc, tusd, pax) {
   const tusdBN = new BN(tusd.value);
   const paxBN = new BN(pax.value);
 
-  return BN.min(BN.min(usdcBN.mul(TWELVE), tusdBN), paxBN).mul(new BN(3)).div(EIGHTEEN).toNumber();
+  return usdcBN.mul(TWELVE).add(tusdBN).add(paxBN).div(EIGHTEEN).toNumber();
 };
 
 export function getRedeemableRSV(rsv) {
