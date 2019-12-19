@@ -63,3 +63,7 @@ export function formatNumber (nativeDecimals) {
     return Math.round(num * 100) / 100;
   }
 };
+
+export function isValidInput(num, max) {
+  return num == "" || (num.match(/^\d+$/) && num > 0 && num <= max);
+}

@@ -37,6 +37,7 @@ export default function MyInputCard(props) {
               <div ref={anchorRef}><TextField className={classes.textField} style={{ height: inputHeight }}
                 variant="outlined"
                 type="number"
+                error={!util.isValidInput(props.value, props.max)}
                 InputProps={{ style: { height: inputHeight }}}
                 onChange={props.onChange}
               /></div>

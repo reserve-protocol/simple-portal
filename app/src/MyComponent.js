@@ -20,7 +20,7 @@ import MyHelpButton from "./components/MyHelpButton.js";
 import * as util from "./util.js";
 
 const BN = require('bn.js');
-const DEV = false;
+const DEV = true;
 
 function log(s) {
   if (DEV) {
@@ -164,7 +164,7 @@ export default class MyComponent extends Component {
   }
 
   hasUSDCAllowance = () => {
-    if (!this.props.initialized) {
+    if (!this.props.initialized || !util.isValidInput(this.state.generate.cur, this.state.generate.max)) {
       return;
     }
     const usdcAllowance = new BN(this.props.drizzleState.contracts.USDC.allowance[this.state.usdc.allowance] && this.props.drizzleState.contracts.USDC.allowance[this.state.usdc.allowance].value);
@@ -173,7 +173,7 @@ export default class MyComponent extends Component {
   }
 
   hasTUSDAllowance = () => {
-    if (!this.props.initialized) {
+    if (!this.props.initialized || !util.isValidInput(this.state.generate.cur, this.state.generate.max)) {
       return;
     }
     const tusdAllowance = new BN(this.props.drizzleState.contracts.TUSD.allowance[this.state.tusd.allowance] && this.props.drizzleState.contracts.TUSD.allowance[this.state.tusd.allowance].value);
@@ -182,7 +182,7 @@ export default class MyComponent extends Component {
   }
 
   hasPAXAllowance = () => {
-    if (!this.props.initialized) {
+    if (!this.props.initialized || !util.isValidInput(this.state.generate.cur, this.state.generate.max)) {
       return;
     }
     const paxAllowance = new BN(this.props.drizzleState.contracts.PAX.allowance[this.state.pax.allowance] && this.props.drizzleState.contracts.PAX.allowance[this.state.pax.allowance].value);
@@ -191,7 +191,7 @@ export default class MyComponent extends Component {
   }
 
   hasRSVAllowance = () => {
-    if (!this.props.initialized) {
+    if (!this.props.initialized || !util.isValidInput(this.state.redeem.cur, this.state.redeem.max)) {
       return;
     }
     const rsvAllowance = new BN(this.props.drizzleState.contracts.Reserve.allowance[this.state.rsv.allowance] && this.props.drizzleState.contracts.Reserve.allowance[this.state.rsv.allowance].value);
@@ -241,10 +241,7 @@ export default class MyComponent extends Component {
   }
 
   generate = () => {
-    if (!this.props.initialized) {
-      return;
-    }
-    if (!this.appOn()) {
+    if (!this.props.initialized || !this.appOn() || !util.isValidInput(this.state.generate.cur, this.state.generate.max) || this.state.generate.cur == "") {
       return;
     }
     log(this.state.generate.cur);
@@ -304,10 +301,7 @@ export default class MyComponent extends Component {
   }
 
   redeem = () => {
-    if (!this.props.initialized) {
-      return;
-    }
-    if (!this.appOn()) {
+    if (!this.props.initialized || !this.appOn() || !util.isValidInput(this.state.redeem.cur, this.state.redeem.max) || this.state.redeem.cur) {
       return;
     }
     log(this.state.redeem.cur);
@@ -414,6 +408,7 @@ export default class MyComponent extends Component {
                   text="Generate RSV"
                   arrow=<ArrowUpward style={{ color: util.GREEN, height: "20px", width: "14px" }}/>
                   max={this.state.generate.max}
+                  value={this.state.generate.cur}
                   onChange={this.handleGenerateChange}
                   onSubmit={this.generate}
                 />
@@ -423,6 +418,7 @@ export default class MyComponent extends Component {
                   text="Redeem RSV"
                   arrow=<ArrowDownward style={{ color: util.GREEN, height: "20px", width: "14px"  }}/>
                   max={this.state.redeem.max}
+                  value={this.state.redeem.cur}
                   onChange={this.handleRedeemChange}
                   onSubmit={this.redeem}
                 />
