@@ -20,7 +20,7 @@ import MyHelpButton from "./components/MyHelpButton.js";
 import * as util from "./util.js";
 
 const BN = require('bn.js');
-const DEV = true;
+const DEV = false;
 
 function log(s) {
   if (DEV) {
