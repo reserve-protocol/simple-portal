@@ -44,7 +44,7 @@ export default function MyHelpButton(props) {
             paddingRight: "10px",
             textAlign: "right",
             color: "#ACAAAA"
-          }}>
+          }} onClick={props.openHelp}>
             Need help ?
           </label>
         }
