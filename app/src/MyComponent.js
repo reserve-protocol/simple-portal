@@ -168,7 +168,7 @@ export default class MyComponent extends Component {
       return;
     }
     const usdcAllowance = new BN(this.props.drizzleState.contracts.USDC.allowance[this.state.usdc.allowance] && this.props.drizzleState.contracts.USDC.allowance[this.state.usdc.allowance].value);
-    const usdcAmt = new BN(this.state.generate.cur).mul(new BN(333334));
+    const usdcAmt = new BN(this.state.generate.cur).mul(util.USDC_RSV);
     return usdcAmt.lte(usdcAllowance);
   }
 
@@ -177,7 +177,7 @@ export default class MyComponent extends Component {
       return;
     }
     const tusdAllowance = new BN(this.props.drizzleState.contracts.TUSD.allowance[this.state.tusd.allowance] && this.props.drizzleState.contracts.TUSD.allowance[this.state.tusd.allowance].value);
-    const tusdAmt = new BN(this.state.generate.cur).mul(new BN(333333)).mul(util.TWELVE);
+    const tusdAmt = new BN(this.state.generate.cur).mul(util.TUSD_RSV).mul(util.TWELVE);
     return tusdAmt.lte(tusdAllowance);
   }
 
@@ -186,7 +186,7 @@ export default class MyComponent extends Component {
       return;
     }
     const paxAllowance = new BN(this.props.drizzleState.contracts.PAX.allowance[this.state.pax.allowance] && this.props.drizzleState.contracts.PAX.allowance[this.state.pax.allowance].value);
-    const paxAmt = new BN(this.state.generate.cur).mul(new BN(333333)).mul(util.TWELVE);
+    const paxAmt = new BN(this.state.generate.cur).mul(util.PAX_RSV).mul(util.TWELVE);
     return paxAmt.lte(paxAllowance);
   }
 
@@ -256,7 +256,7 @@ export default class MyComponent extends Component {
 
     // log(drizzle.web3.givenProvider.networkVersion);
 
-    const usdcAmt = drizzle.web3.utils.toBN(this.state.generate.cur).mul(drizzle.web3.utils.toBN(333334));
+    const usdcAmt = drizzle.web3.utils.toBN(this.state.generate.cur).mul(util.USDC_RSV);
     if (!this.hasUSDCAllowance()) {
       log("hi");
       const usdcOptions = { from: drizzleState.accounts[0], gas: 80000, gasLimit: 80000, to: drizzle.contracts.USDC.address };
@@ -268,7 +268,7 @@ export default class MyComponent extends Component {
       );
     }
 
-    const tusdAmt = drizzle.web3.utils.toBN(this.state.generate.cur).mul(drizzle.web3.utils.toBN(333333)).mul(util.TWELVE);
+    const tusdAmt = drizzle.web3.utils.toBN(this.state.generate.cur).mul(util.TUSD_RSV).mul(util.TWELVE);
     if (!this.hasTUSDAllowance()) {
       const tusdOptions = { from: drizzleState.accounts[0], gas: 80000, gasLimit: 80000, to: drizzle.contracts.TUSD.address };
       log(tusdOptions);
@@ -279,7 +279,7 @@ export default class MyComponent extends Component {
       );
     }
 
-    const paxAmt = drizzle.web3.utils.toBN(this.state.generate.cur).mul(drizzle.web3.utils.toBN(333333)).mul(util.TWELVE);
+    const paxAmt = drizzle.web3.utils.toBN(this.state.generate.cur).mul(util.PAX_RSV).mul(util.TWELVE);
     if (!this.hasPAXAllowance()) {
       const paxOptions = { from: drizzleState.accounts[0], gas: 80000, gasLimit: 80000, to: drizzle.contracts.PAX.address };
       log(paxOptions);
