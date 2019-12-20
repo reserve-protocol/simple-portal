@@ -301,7 +301,7 @@ export default class MyComponent extends Component {
   }
 
   redeem = () => {
-    if (!this.props.initialized || !this.appOn() || !util.isValidInput(this.state.redeem.cur, this.state.redeem.max) || this.state.redeem.cur) {
+    if (!this.props.initialized || !this.appOn() || !util.isValidInput(this.state.redeem.cur, this.state.redeem.max) || this.state.redeem.cur == "") {
       return;
     }
     log(this.state.redeem.cur);
