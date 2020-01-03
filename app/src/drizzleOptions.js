@@ -1,4 +1,3 @@
-import BasicERC20 from "./contracts/BasicERC20.json";
 import USDC from "./contracts/USDC.json";
 import TUSD from "./contracts/TUSD.json";
 import PAX from "./contracts/PAX.json";

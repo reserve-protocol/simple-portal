@@ -20924,7 +20924,7 @@
     }
   },
   "schemaVersion": "3.0.17",
-  "updatedAt": "2019-12-17T01:34:26.191Z",
+  "updatedAt": "2020-01-03T19:43:25.455Z",
   "networkType": "ethereum",
   "devdoc": {
     "details": "An ERC-20 token with minting, burning, pausing, and user freezing. Based on OpenZeppelin's [implementation](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/41aa39afbc13f0585634061701c883fe512a5469/contracts/token/ERC20/ERC20.sol). * Non-constant-sized data is held in ReserveEternalStorage, to facilitate potential future upgrades.",

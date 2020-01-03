@@ -27,8 +27,13 @@ export const TWELVE = TEN.pow(new BN(12));
 export const EIGHTEEN = TEN.pow(new BN(18));
 export const GENERATE_TEXT = ["Approve USDC", "Approve TUSD", "Approve PAX", "Generate RSV"];
 export const REDEEM_TEXT = ["Approve RSV", "Redeem RSV"];
-export const METAMASK_TEXT = "The Metamask extension is required to generate or redeem RSV";
-export const HELP_TEXT = "RSV is a decentralized stablecoin collateralized by USDC, TUSD, and PAX that can be generated and redeemed by anyone, anytime. ";
+export const METAMASK_TEXTS = ["The Metamask extension is required to generate or redeem RSV"];
+export const HELP_TEXTS = [
+  "RSV is a decentralized stablecoin collateralized by USDC, TUSD, and PAX that can be generated and redeemed by anyone, anytime. ",
+  "In order to generate RSV, you will need equal parts USDC, TUSD, and PAX – you can't generate RSV from just one of these, you need all three. When you redeem RSV, you will get out equal parts of all three of these tokens as well.",
+  'Clicking "Generate RSV" will open Metamask and prompt you to sign four transactions in a row; three to allow the Reserve smart contract to transfer your collateral tokens to the Vault, and one to actually do that and generate your new RSV tokens. Metamask may not show you the quantities for two of the three transactions; this is an issue with the library used under the hood and should not impact the transactions themselves.',
+  'Clicking "Redeem RSV" will open Metamask to run essentially the same process in reverse.'
+  ];
 
 export function getIssuableRSV(usdc, tusd, pax) {
   if (!usdc || !tusd || !pax || !usdc.value || !tusd.value || !pax.value) { 

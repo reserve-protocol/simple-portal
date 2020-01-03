@@ -29,11 +29,12 @@ const useStyles = makeStyles(theme => ({
 
 export default function MyModal(props) {
   const classes = useStyles();
+  var helpTexts = props.helpTexts ? props.helpTexts : [];
   var texts = props.texts ? props.texts : [];
   var image = <img 
     src={props.image} 
     width={200} 
-    height={200} 
+    height={props.imageHeight} 
     style={{ paddingBottom: "0px" }} 
     alt="drizzle-logo" 
   />;
@@ -71,9 +72,10 @@ export default function MyModal(props) {
             <p style={{textAlign: "center"}}>
               {image}
             </p>
-            <p className="modal_oneline_text">
-              <label>{props.text}</label>
-            </p>
+            {helpTexts.map(function(text, index) {
+              return <p className="modal_oneline_text"><label>{text}</label></p>
+            })}
+            <p className="modal_oneline_text">{props.linkText}</p>
             <ol style={{ paddingBottom: "50px" }}>
               {texts.map(function(text, index) {
                 var symbolHTML;

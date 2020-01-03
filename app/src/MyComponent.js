@@ -241,7 +241,7 @@ export default class MyComponent extends Component {
   }
 
   generate = () => {
-    if (!this.props.initialized || !this.appOn() || !util.isValidInput(this.state.generate.cur, this.state.generate.max) || this.state.generate.cur == "") {
+    if (!this.props.initialized || !this.appOn() || !util.isValidInput(this.state.generate.cur, this.state.generate.max) || this.state.generate.cur === "") {
       return;
     }
     log(this.state.generate.cur);
@@ -301,7 +301,7 @@ export default class MyComponent extends Component {
   }
 
   redeem = () => {
-    if (!this.props.initialized || !this.appOn() || !util.isValidInput(this.state.redeem.cur, this.state.redeem.max) || this.state.redeem.cur == "") {
+    if (!this.props.initialized || !this.appOn() || !util.isValidInput(this.state.redeem.cur, this.state.redeem.max) || this.state.redeem.cur === "") {
       return;
     }
     log(this.state.redeem.cur);
@@ -351,7 +351,8 @@ export default class MyComponent extends Component {
         <MyModal
           title="Connect Metamask"
           image={metamaskLogo}
-          text={util.METAMASK_TEXT}
+          imageHeight={"200px"}
+          helpTexts={util.METAMASK_TEXTS}
           on={(!this.appOn() || !this.props.initialized) && !this.state.hideConnectMetamask}
           onExited={() => {
             this.setState({ hideConnectMetamask: true });
@@ -360,7 +361,9 @@ export default class MyComponent extends Component {
         <MyModal
           title=""
           image={rsvCombineLogo}
-          text={util.HELP_TEXT}
+          imageHeight={"220px"}
+          helpTexts={util.HELP_TEXTS}
+          linkText={<label>For more info about how RSV works, see <a href="https://medium.com/reserve-currency/reserve-beta-launch-86855468d506" target="_self">here</a>.</label>}
           on={this.state.showingHelp}
           onExited={() => {
             this.setState({ showingHelp: false });

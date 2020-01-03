@@ -4631,7 +4631,7 @@
   },
   "networks": {},
   "schemaVersion": "3.0.17",
-  "updatedAt": "2019-12-17T01:34:26.198Z",
+  "updatedAt": "2020-01-03T19:43:25.466Z",
   "networkType": "ethereum",
   "devdoc": {
     "details": "Eternal Storage facilitates future upgrades. * If Reserve chooses to release an upgraded contract for the Reserve in the future, Reserve will have the option of reusing the deployed version of this data contract to simplify migration. * The use of this contract does not imply that Reserve will choose to do a future upgrade, nor that any future upgrades will necessarily re-use this storage. It merely provides option value.",
