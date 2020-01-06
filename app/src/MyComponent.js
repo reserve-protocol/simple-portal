@@ -363,7 +363,7 @@ export default class MyComponent extends Component {
           image={rsvCombineLogo}
           imageHeight={"220px"}
           helpTexts={util.HELP_TEXTS}
-          linkText={<label>For more info about how RSV works, see <a href="https://medium.com/reserve-currency/reserve-beta-launch-86855468d506" target="_self">here</a>.</label>}
+          linkText={<label>For more info about how RSV works, see <a href="https://medium.com/reserve-currency/reserve-beta-launch-86855468d506" target="_blank">here</a>.</label>}
           on={this.state.showingHelp}
           onExited={() => {
             this.setState({ showingHelp: false });
@@ -404,7 +404,7 @@ export default class MyComponent extends Component {
             />
           </Grid>
           
-          <Grid item xs={12}>
+          <Grid item xs={12} style={{ paddingBottom: "5px" }}>
             <Grid container className={rootStyle} spacing={0} alignItems="center" justify="center">      
               <Grid item xs={5}>
                 <MyInputCard
