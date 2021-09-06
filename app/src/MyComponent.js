@@ -38,7 +38,7 @@ export default class MyComponent extends Component {
       usdc: { bal: null, allowance: null, approve: null, decimals: 6 },
       tusd: { bal: null, allowance: null, approve: null, decimals: 18 },
       pax: { bal: null, allowance: null, approve: null, decimals: 18 },
-      rsv: { bal: null, allowance: null, approve: null, generate: null, decimals: 18 },
+      rsv: { bal: null, allowance: null, approve: null, maxSupply: null, totalSupply: null, generate: null, decimals: 18 },
       manager: { issue: null, redeem: null },
       showingHelp: false,
       hideConnectMetamask: false,
@@ -65,12 +65,14 @@ export default class MyComponent extends Component {
     const tusdAllowance = drizzle.contracts.TUSD.methods["allowance"].cacheCall(account, managerAddress);
     const paxAllowance = drizzle.contracts.PAX.methods["allowance"].cacheCall(account, managerAddress);
     const rsvAllowance = drizzle.contracts.Reserve.methods["allowance"].cacheCall(account, managerAddress);
+    const maxSupply = drizzle.contracts.Reserve.methods["maxSupply"].cacheCall();
+    const totalSupply = drizzle.contracts.Reserve.methods["totalSupply"].cacheCall();
 
     const newState = merge(this.state, {
       usdc: { bal: usdcBal, allowance: usdcAllowance }, 
       tusd: { bal: tusdBal, allowance: tusdAllowance }, 
       pax: { bal: paxBal, allowance: paxAllowance },
-      rsv: { bal: rsvBal, allowance: rsvAllowance } 
+      rsv: { bal: rsvBal, allowance: rsvAllowance, maxSupply: maxSupply, totalSupply: totalSupply} 
     });
     this.setState(newState);
   }
@@ -244,6 +246,7 @@ export default class MyComponent extends Component {
     if (!this.props.initialized || !this.appOn() || !util.isValidInput(this.state.generate.cur, this.state.generate.max) || this.state.generate.cur === "") {
       return;
     }
+
     log(this.state.generate.cur);
     const { drizzle, drizzleState } = this.props;
     const managerAddress = drizzle.contracts.Manager.address;
@@ -253,6 +256,15 @@ export default class MyComponent extends Component {
     var paxApprove = this.state.pax.approve;
 
     log("network version");
+
+    // Check for MaxSupply hit
+    const maxSupply = drizzle.web3.utils.toBN(this.state.rsv.maxSupply);
+    const totalSupply = drizzle.web3.utils.toBN(this.state.rsv.totalSupply);
+    const cur = drizzle.web3.utils.toBN(this.state.generate.cur);
+    if (totalSupply.add(cur) > maxSupply) {
+        alert("Sorry, RSV is at max supply");
+        return;
+    }
 
     // log(drizzle.web3.givenProvider.networkVersion);
 
