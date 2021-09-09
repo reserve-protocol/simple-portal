@@ -258,10 +258,10 @@ export default class MyComponent extends Component {
     log("network version");
 
     // Check for MaxSupply hit
-    const maxSupply = drizzle.web3.utils.toBN(this.state.rsv.maxSupply);
-    const totalSupply = drizzle.web3.utils.toBN(this.state.rsv.totalSupply);
-    const cur = drizzle.web3.utils.toBN(this.state.generate.cur);
-    if (totalSupply.add(cur) > maxSupply) {
+    const maxSupply = drizzle.web3.utils.toBN(drizzleState.contracts.Reserve.maxSupply[this.state.rsv.maxSupply].value);
+    const totalSupply = drizzle.web3.utils.toBN(drizzleState.contracts.Reserve.totalSupply[this.state.rsv.totalSupply].value);
+    const cur = drizzle.web3.utils.toBN(this.state.generate.cur).mul(util.EIGHTEEN);
+    if (totalSupply.add(cur).gt(maxSupply)) {
         alert("Sorry, RSV is at max supply");
         return;
     }
